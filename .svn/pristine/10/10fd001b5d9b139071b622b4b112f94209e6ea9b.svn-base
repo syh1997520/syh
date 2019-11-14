@@ -1,0 +1,406 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+
+
+
+import com.qlgshopping.dao.EvaLikeDao;
+import com.qlgshopping.dao.EvaluteDao;
+import com.qlgshopping.dao.OrderInfoDao;
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.dao.StoreDao;
+import com.qlgshopping.dao.TypeDao;
+import com.qlgshopping.dao.UserInfoDao;
+import com.qlgshopping.entity.EvaLike;
+import com.qlgshopping.entity.Evalute;
+import com.qlgshopping.entity.Page;
+import com.qlgshopping.entity.Product;
+
+public class ProductService {
+	private ProductDao pDao=new ProductDao();
+	private TypeDao typeDao=new TypeDao();
+	private StoreDao stoDao=new StoreDao();
+	private EvaluteDao evaDao=new EvaluteDao();
+	private OrderInfoDao odifDao=new OrderInfoDao();
+	private UserInfoDao uDao=new UserInfoDao();
+	private EvaLikeDao elDao=new EvaLikeDao();
+	
+
+	public Product selectProductByProNameStoId(String proName,int stoId){
+		
+		return pDao.selectProductByProNameStoId(proName, stoId);
+	}
+	
+	/**
+	 * 获取热门产品
+	 */
+	public ArrayList<Product> selectPopularPro() {
+         ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectPopularProduct());
+  	     for(Product pro:selectProductByProName){
+  	    	 this.loadProductForeign(pro);
+  	     }
+  	     return selectProductByProName;
+	}
+	
+	
+	public Page<Product> getPageA(int currentPage,int pageSize){
+		Page<Product> page=new Page<Product>();
+		//设置当前页
+		page.setCurrentPage(currentPage);
+		//设置页面容量
+		page.setPageSize(pageSize);
+		
+		//获取总笔数
+		int totalRow=(int) pDao.getTableSizeA();
+		page.setTotalRow(totalRow);
+		
+		//获取集合
+		int start=(page.getCurrentPage()-1)*page.getPageSize();
+		ArrayList<Product> aList=pDao.selectAlllByPageA(start, pageSize);
+		
+		for(Product pro:aList){
+			this.loadProductForeign(pro);
+		}
+		
+		
+		page.setaList(aList);
+		
+		
+		return page;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 *分页查询
+	 * @param Product pro
+	 * @return int
+	 */
+	public Page<Product> getPage(int stoId,int currentPage,int pageSize){
+		Page<Product> page=new Page<Product>();
+		//设置当前页
+		page.setCurrentPage(currentPage);
+		//设置页面容量
+		page.setPageSize(pageSize);
+		
+		//获取总笔数
+		int totalRow=(int) pDao.getTableSize(stoId);
+		page.setTotalRow(totalRow);
+		
+		//获取集合
+		int start=(page.getCurrentPage()-1)*page.getPageSize();
+		ArrayList<Product> aList=pDao.selectAlllByPage(stoId,start, pageSize);
+		
+		for(Product pro:aList){
+			this.loadProductForeign(pro);
+		}
+		
+		
+		page.setaList(aList);
+		
+		
+		return page;
+	}
+	
+	
+	
+	
+	/**
+	 * 增加商品
+	 * @param Product pro
+	 * @return int
+	 */
+	public boolean insertProduct(Product pro) {
+		if(pDao.insertProduct(pro)>0){
+			return true;
+		}
+		
+		// 返回int值，如果>0,添加成功；=0,添加失败
+		return false;
+	}
+	
+	/**
+	 * 根据id删除产品
+	 * @param proId
+	 * @return
+	 */
+	public boolean deletProduct(int proId){
+		if(pDao.deletProduct(proId)>0){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 购买某商品时
+	 * @param proId
+	 * @return
+	 */
+	public boolean buyProduct(int proId,int buyNumber){
+		if(pDao.buyProduct(proId,buyNumber)>0){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 改变商品信息
+	 * @param pro
+	 * @return
+	 */
+	public boolean updateProduct(Product pro) {
+		if(pDao.updateProduct(pro)>0){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 根据商品id查找商品
+	 * @param proId
+	 * @return
+	 */
+	public Product selectProductByProId(int proId){
+    Product selectProductByProId = pDao.selectProductByProId(proId);
+    this.loadProductForeign(selectProductByProId);
+    for(Evalute evalute:selectProductByProId.getEvaluteList()){
+    	evalute.setOrderinfo(odifDao.selectByOrderInfoId(evalute.getOdifId()));
+		evalute.setUserInfo(uDao.selectUserById(evalute.getUserId()));
+		evalute.setProduct(pDao.selectProductByProId(evalute.getProId()));
+		evalute.setLikeList(new ArrayList<EvaLike>(elDao.selectEvaLikeByLikeFor(evalute.getEvaId())));
+    }
+    return selectProductByProId;
+	}
+	/**
+	 * 根据商品名模糊查找
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProName(String proName){
+	     ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProName(proName));
+	     for(Product pro:selectProductByProName){
+	    	 this.loadProductForeign(pro);
+	     }
+	     return selectProductByProName;
+	}
+	/**
+	 * 查询所有商品
+	 */
+	public ArrayList<Product> selectAllProduct() {
+         ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectAllProduct());
+  	     for(Product pro:selectProductByProName){
+  	    	 this.loadProductForeign(pro);
+  	     }
+  	     return selectProductByProName;
+	}
+	/**
+	 * 根据类别查找
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByType(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByType(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	/**
+	 * 根据类别查找
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByTypeFromIndex(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByTypeFromIndex(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	/**
+	 * 根据类别查找(价格降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByTypePriceLow(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByTypeIdPriceLow(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据商品名查找(价格降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByPronamePriceLow(String proName){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProNamePriceLow(proName));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据类别查找(价格升序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByTypePriceHigh(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByTypeIdPriceHigh(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据商品名查找(价格升序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProNamePriceHigh(String proName){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProNamePriceHigh(proName));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据类别查找(日期降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByTypeDataLow(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByTypeIdDateLow(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据商品名查找(日期降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProNameDataLow(String proName){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProNameDateLow(proName));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据类别查找(销量降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByTypeSalesLow(int proType){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByTypeIdSalesLow(proType));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据商品名查找(销量降序)
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProNameSalesLow(String proName){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProNameSalesLow(proName));
+ 	     for(Product pro:selectProductByProName){
+ 	    	 this.loadProductForeign(pro);
+ 	     }
+ 	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据价格区间查找
+	 * @param proName
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByPricre(double price1,double price2){
+	ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByPricre(price1, price2));
+     for(Product pro:selectProductByProName){
+    	 this.loadProductForeign(pro);
+     }
+     return selectProductByProName;
+	}
+	/**
+	 * 根据店铺id查询
+	 * @param 
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByStoId(int stoId){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByStoId(stoId));
+	     for(Product pro:selectProductByProName){
+	    	 this.loadProductForeign(pro);
+	     }
+	     return selectProductByProName;
+	}
+	
+	/**
+	 * 根据店铺id查询
+	 * @param 
+	 * @return
+	 */
+
+	
+	
+	/**
+	 * 根据产品状态查询
+	 * @param
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProStatic(String proStatic){
+	ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProStatic(proStatic));
+    for(Product pro:selectProductByProName){
+   	 this.loadProductForeign(pro);
+    }
+    return selectProductByProName;
+	}
+	
+	/**
+	 * 根据产品牌查找
+	 * @param
+	 * @return
+	 */
+	public ArrayList<Product> selectProductByProBrand(String proBrand){
+		ArrayList<Product> selectProductByProName = new ArrayList<Product>(pDao.selectProductByProBrand(proBrand));
+	    for(Product pro:selectProductByProName){
+	   	 	this.loadProductForeign(pro);
+	    }
+	    return selectProductByProName;
+	}
+	/**
+	 * 给产品添加外键
+	 * @param pro
+	 */
+	public void loadProductForeign(Product pro){
+		if(pro==null)
+			return;
+		pro.setType(typeDao.selectBytypeId(pro.getProType()));
+		pro.setStore(stoDao.selectBystoId(pro.getStoId()));
+		pro.setEvaluteList(new ArrayList<Evalute>(evaDao.selectAllByproId(pro.getProId())));
+	}
+}

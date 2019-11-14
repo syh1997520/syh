@@ -1,0 +1,114 @@
+package com.qlgshopping.service;
+
+import java.util.List;
+
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.entity.Product;
+
+public class ProductService {
+	ProductDao pDao=new ProductDao();
+	
+	/**
+	 * 增加商品
+	 * @param Product pro
+	 * @return int
+	 */
+	public boolean insertProduct(Product pro) {
+		if(pDao.insertProduct(pro)>0){
+			return true;
+		}
+		
+		// 返回int值，如果>0,添加成功；=0,添加失败
+		return false;
+	}
+	
+	/**
+	 * 根据id删除产品
+	 * @param proId
+	 * @return
+	 */
+	public boolean deletProduct(int proId){
+		if(pDao.deletProduct(proId)>0){
+			return true;
+		}
+		return false;
+	}
+	
+
+	/**
+	 * 改变商品信息
+	 * @param pro
+	 * @return
+	 */
+	public boolean updateProduct(Product pro) {
+		if(pDao.updateProduct(pro)>0){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 根据商品id查找商品
+	 * @param proId
+	 * @return
+	 */
+	public Product selectProductByProId(int proId){
+    return pDao.selectProductByProId(proId);			
+	}
+	/**
+	 * 根据商品名模糊查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProName(String proName){
+	     return pDao.selectProductByProName(proName);
+	}
+	/**
+	 * 查询所有商品
+	 */
+	public List<Product> selectAllProduct() {
+           return pDao.selectAllProduct();
+	}
+	/**
+	 * 根据类别查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByType(int proType){
+		return pDao.selectProductByType(proType);
+	}
+	/**
+	 * 根据价格区间查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByPricre(double price1,double price2){
+	return pDao.selectProductByPricre(price1, price2);
+	}
+	/**
+	 * 根据店铺id查询
+	 * @param 
+	 * @return
+	 */
+	public List<Product> selectProductByStoId(int stoId){
+		return pDao.selectProductByStoId(stoId);
+	}
+	/**
+	 * 根据产品状态查询
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByProStatic(String proStatic){
+	return pDao.selectProductByProStatic(proStatic);
+	}
+	
+	/**
+	 * 根据产品牌查找
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByProBrand(String proBrand){
+		return pDao.selectProductByProBrand(proBrand);
+	}
+}

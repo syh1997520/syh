@@ -1,0 +1,35 @@
+package com.qlgshopping.entity;
+/**
+ * 评论点赞的实体类
+ * @author Administrator
+ *
+ */
+public class EvaLike {
+private int likeId;
+private int likeFrom;
+private int likeFor;
+public int getLikeId() {
+	return likeId;
+}
+public void setLikeId(int likeId) {
+	this.likeId = likeId;
+}
+public int getLikeFrom() {
+	return likeFrom;
+}
+public void setLikeFrom(int likeFrom) {
+	this.likeFrom = likeFrom;
+}
+public int getLikeFor() {
+	return likeFor;
+}
+public void setLikeFor(int likeFor) {
+	this.likeFor = likeFor;
+}
+@Override
+public String toString() {
+	return "EvaLike [likeId=" + likeId + ", likeFrom=" + likeFrom
+			+ ", likeFor=" + likeFor + "]";
+}
+
+}

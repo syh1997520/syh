@@ -1,0 +1,145 @@
+package com.qlgshopping.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.qlgshopping.entity.ReceiveAddress;
+import com.qlgshopping.service.ReceiveAddressService;
+
+public class ReceiveAddressServlet extends HttpServlet {
+	ReceiveAddressService rSer=new ReceiveAddressService();
+	/**
+	 * Constructor of the object.
+	 */
+	public ReceiveAddressServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+             String op=request.getParameter("op");
+             if(op.equals("query")){
+            	this.query(request, response); 
+             }else if(op.equals("add")){
+             	this.add(request, response); 
+              }else if(op.equals("del")){
+              	this.add(request, response); 
+               }
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to post.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+          this.doGet(request, response);
+	}
+	
+	/**
+	 * 查询
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void query(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+        
+		 ArrayList<ReceiveAddress> recList=rSer.selectByUserId(1);
+		 System.out.println(recList);
+		 Gson gson=new Gson();
+		 String strGson=gson.toJson(recList);
+		 response.getWriter().println(strGson);
+	}
+	/**
+	 * 添加
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void add(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		
+		String impAddress=request.getParameter("impAddress");
+		if(impAddress==null||"".equals(impAddress)){
+			System.out.println("请输入详细");
+			response.sendRedirect("chooseAddress2.jsp");
+			return;
+		}
+		String uName=request.getParameter("uName");
+		if(uName==null||"".equals(uName)){
+			System.out.println("请输入姓名");
+			response.sendRedirect("chooseAddress2.jsp");
+			return;
+		}
+		String phone=request.getParameter("phone");
+		if(phone==null||"".equals(phone)){
+			System.out.println("请输入电话号码");
+			response.sendRedirect("chooseAddress2.jsp");
+			return;
+		}
+		ReceiveAddress recAdd=new ReceiveAddress();
+		recAdd.setRecAddress(impAddress);
+		recAdd.setRecName(uName);
+		recAdd.setRecPhone(phone);
+		recAdd.setUserId(1);
+		if(rSer.insertReceiveAddress(recAdd)){
+			System.out.println("添加成功");
+			
+		}else{
+			System.out.println("添加失败");
+			
+		}
+		response.sendRedirect("chooseAddress2.jsp");
+	}
+	
+	/**
+	 * 添加
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void del(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+
+}

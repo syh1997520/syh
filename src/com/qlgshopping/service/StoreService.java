@@ -1,0 +1,184 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.dao.BusinessDao;
+import com.qlgshopping.dao.OrderTableDao;
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.dao.StoreDao;
+import com.qlgshopping.dao.TypeDao;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.Page;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.entity.Store;
+
+public class StoreService {
+	private StoreDao sDao=new StoreDao();
+	private BusinessDao busDao=new BusinessDao();
+	private OrderTableDao odtDao=new OrderTableDao();
+	private ProductDao proDao=new ProductDao();
+	private TypeDao tyDao=new TypeDao();
+	
+	/**
+	 * 加载店铺类的外键
+	 * @param sto
+	 */
+	public Page<Store> getPage(int busId,int currentPage,int pageSize){
+		Page<Store> page=new Page<Store>();
+		//设置页面容量
+		page.setPageSize(pageSize);
+		page.setCurrentPage(currentPage);
+		
+		
+		//获取总笔数
+		int totalRow=(int) sDao.getTableSize(busId);
+		page.setTotalRow(totalRow);
+		
+		//开始的笔数
+		int start=(page.getCurrentPage()-1)*page.getPageSize();
+		
+		ArrayList<Store> aList=sDao.selectAllByPage(busId,start, pageSize);
+		for(Store store:aList){
+			loadStoreForeignData(store);
+		}
+		
+		page.setaList(aList);
+		return page;
+		
+	}
+	
+	public Page<Store> getPageA(int currentPage,int pageSize){
+		Page<Store> page=new Page<Store>();
+		//设置页面容量
+		page.setPageSize(pageSize);
+		page.setCurrentPage(currentPage);
+		
+		
+		//获取总笔数
+		int totalRow=(int) sDao.getTableSizeA();
+		page.setTotalRow(totalRow);
+		
+		//开始的笔数
+		int start=(page.getCurrentPage()-1)*page.getPageSize();
+		
+		ArrayList<Store> aList=sDao.selectAllByPageA(start, pageSize);
+		for(Store store:aList){
+			loadStoreForeignData(store);
+		}
+		page.setaList(aList);
+		return page;
+		
+	}
+	
+	
+	
+	public Store selectBystoName(String stoName){
+		   return sDao.selectBystoName(stoName);
+	}
+	
+	
+	/**
+	 * 查找所有店铺
+	 * @return
+	 */
+		public ArrayList<Store> selectAllStore(){
+			ArrayList<Store> selectAllStore = new ArrayList<Store>(sDao.selectAllStore());
+			for(Store s:selectAllStore){
+				this.loadStoreForeignData(s);
+			}
+			return selectAllStore;
+		}
+		/**
+		 * 新增店铺
+		 * @param store
+		 * @return
+		 */
+		public boolean insertStor(Store store){
+			if(sDao.insertStor(store)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 删除店铺
+		 * @param stoId
+		 * @return
+		 */
+		public boolean deleteStore(int stoId){
+			if(sDao.deleteStore(stoId)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 修改店铺
+		 * @param store
+		 * @return
+		 */
+		public boolean updateScore(Store store){
+			if(sDao.updateScore(store)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 根据店铺id查找店铺
+		 * @param stoId
+		 * @return
+		 */
+		public Store selectBystoId(int stoId){
+			Store selectBystoId = sDao.selectBystoId(stoId);
+			this.loadStoreForeignData(selectBystoId);
+			return selectBystoId;
+		}
+		/**
+		 * 根据商家id查找店铺
+		 * @param busId
+		 * @return
+		 */
+		public ArrayList<Store> selectByBusId(int busId){
+			ArrayList<Store> selectByBusId =new ArrayList<Store>(sDao.selectByBusId(busId));
+			for(Store s:selectByBusId){
+				this.loadStoreForeignData(s);
+			}
+			return selectByBusId;
+		}
+		/**
+		 * 根据类别ID查找店铺集合
+		 * @param typeId
+		 * @return
+		 */
+		public ArrayList<Store> selectByStoType(int typeId){
+			ArrayList<Store> selectByBusId =new ArrayList<Store>(sDao.selectByStoType(typeId));
+			for(Store s:selectByBusId){
+				this.loadStoreForeignData(s);
+			}
+			return selectByBusId;
+		}
+		/**
+		 * 根据店铺状态查找店铺集合
+		 * @param stoExam
+		 * @return
+		 */
+		public List<Store> selectByStoExam(int stoExam){
+			ArrayList<Store> selectByBusId =new ArrayList<Store>(sDao.selectByStoExam(stoExam));
+			for(Store s:selectByBusId){
+				this.loadStoreForeignData(s);
+			}
+			return selectByBusId;
+		}
+		/**
+		 * 加载店铺类的外键
+		 * @param sto
+		 */
+		public void loadStoreForeignData(Store sto){
+			if(sto==null)
+				return;
+			int stoId=sto.getStoId();
+			sto.setBus(busDao.selectBusinessByBusId(sto.getBusId()));
+			sto.setOrderTableList(new ArrayList<OrderTable>(odtDao.selectByStoId(stoId)));
+			sto.setProductList(new ArrayList<Product>(proDao.selectProductByStoId(stoId)));
+			sto.setType(tyDao.selectBytypeId(sto.getStoType()));
+		}
+}

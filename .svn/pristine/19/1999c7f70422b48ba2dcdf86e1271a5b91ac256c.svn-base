@@ -1,0 +1,47 @@
+package com.qlgshopping.dao;
+
+import java.util.List;
+
+import com.qlgshopping.entity.Store;
+
+public class StoreDao extends BaseDao<Store> {
+	/**
+	 * 查找所有店铺
+	 * @return
+	 */
+		public List<Store> selectAllStore(){
+			
+			String sql="select * from Store";
+			return this.selectAll(sql);
+		}
+		/**
+		 * 新增店铺
+		 * @param store
+		 * @return
+		 */
+		public int insertStor(Store store){
+			String sql="insert into  Store values(?,?,?,?,?,?,?,?,?,?,?)";
+			Object[] obj={store.getStoId(),store.getStoName(),store.getStoAddress(),store.getBusId(),store.getStoScore(),store.getStoType(),store.getStoStatic(),store.getStoPhone(),store.getStoTransNumber(),store.getStoImg(),store.getStoExam()};
+			return this.updateOne(sql, obj);
+		}
+		/**
+		 * 删除店铺
+		 * @param stoId
+		 * @return
+		 */
+		public int deleteStore(int stoId){
+			String sql="delete  from Store where stoId=?";
+			Object obj[]={stoId};
+			return this.updateOne(sql, obj);	
+		}
+		/**
+		 * 修改店铺
+		 * @param store
+		 * @return
+		 */
+		public int updateScore(Store store){
+			String sql="update Store set stoName=?,stoAddress=?,stoScore=?,stoStatic=?,stoPhone=?,stoTransNumber=?,stoImg=?,stoExam=? where stoId=?";
+			Object[] obj={store.getStoName(),store.getStoAddress(),store.getStoScore(),store.getStoStatic(),store.getStoPhone(),store.getStoTransNumber(),store.getStoImg(),store.getStoExam(),store.getStoId()};
+			return this.updateOne(sql, obj);
+		}
+}

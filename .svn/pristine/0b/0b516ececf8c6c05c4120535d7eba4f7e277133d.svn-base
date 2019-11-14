@@ -1,0 +1,52 @@
+package com.qlgshopping.dao;
+
+import java.util.List;
+
+import com.qlgshopping.entity.OrderTable;
+
+public class OrderTableDao extends BaseDao<OrderTable> {
+	/**
+	 * 查询所有的方法
+	 * @return
+	 */
+	public List<OrderTable> selectAllOrderTable(){
+		String sql="select * from ordertable";
+		return this.selectAll(sql);
+	}
+	/**
+	 * 根据ordId删除数据
+	 * @param ordId
+	 * @return
+	 */
+	public int deleteOrderTable(int ordId){
+		String sql="delete from ordertable where ordId=?";
+		return this.updateOne(sql,ordId);
+	}
+	/**
+	 * 将对象插入到数据库
+	 * @param ord
+	 * @return
+	 */
+	public int insertOrdId(OrderTable ord){
+		String sql="insert into ordertable values (null,?,?,?,?,?,?,?)";
+		if(ord.getOrdAddress()!=0){
+			Object[] obj={ord.getStoId(),ord.getUserId(),ord.getOrdPrice(),ord.getOrdTime(),ord.getPayTime(),ord.getOrdStatic(),ord.getOrdAddress()};
+			return this.updateOne(sql, obj);
+		}
+		else{
+			Object[] obj={ord.getStoId(),ord.getUserId(),ord.getOrdPrice(),ord.getOrdTime(),ord.getPayTime(),ord.getOrdStatic(),null};	
+			return this.updateOne(sql, obj);
+		}
+	}
+
+	/**
+	 * 修改订单信息
+	 * @param ord
+	 * @return
+	 */
+	public int updatePayTimeStatic(OrderTable ord){
+		String sql="update ordertable set ordPrice=?,ordTime=?,payTime=?,ordStatic=?,ordAddress=? where ordId=?";
+		Object obj[] ={ord.getOrdPrice(),ord.getOrdTime(),ord.getPayTime(),ord.getOrdStatic(),ord.getOrdAddress(),ord.getOrdId()};
+		return this.updateOne(sql, obj);
+	}
+}

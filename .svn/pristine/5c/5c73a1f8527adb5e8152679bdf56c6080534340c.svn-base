@@ -1,0 +1,305 @@
+package com.qlgshopping.dao;
+
+/*
+ * 商品的增删改查
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.entity.Product;
+
+
+
+public class ProductDao extends BaseDao<Product>{
+	TypeDao tDao=new TypeDao();
+	StoreDao sDao=new StoreDao();
+	/**
+	 * 分页查询
+	 * @param Product pro
+	 * @return int
+	 */
+	public ArrayList<Product> selectAlllByPage(int stoId,int start,int pageSize){
+		String sql="select * from product where stoId=? limit ?,?";
+		Object obj[]={stoId,start,pageSize};
+		
+		return (ArrayList<Product>) this.selectAll(sql,obj);
+		
+	}
+	public ArrayList<Product> selectAlllByPageA(int start,int pageSize){
+		String sql="select * from product order by proId desc limit ?,?";
+		Object obj[]={start,pageSize};
+		
+		return (ArrayList<Product>) this.selectAll(sql,obj);
+		
+	}
+	
+	public long getTableSizeA(){
+		String sql="select count(*) from product";
+		return this.getTableSize(sql);
+		
+	}
+	
+	
+	
+	
+	public long getTableSize(int stoId){
+		String sql="select count(*) from product where stoId=?";
+		return this.getTableSize(sql,stoId);
+		
+	}
+	/**
+	 * 某件商品被购买了
+	 * @param proId
+	 * @return
+	 */
+	public int buyProduct(int proId,int buyNumber){
+		String sql="update product set proNumber=proNumber-?,proSalesNumber=proSalesNumber+? where proId=?";
+		return this.updateOne(sql,buyNumber,buyNumber,proId);
+	}
+	
+	
+	/**
+	 * 查询10个热门产品
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectPopularProduct(){
+		String sql="select * from product where proStatic='在售' order by rand() limit 10";
+		return this.selectAll(sql);
+	}
+	
+	
+	
+	/**
+	 * 增加商品
+	 * @param Product pro
+	 * @return int
+	 */
+	public int insertProduct(Product pro) {
+		String sql = "INSERT INTO `product` VALUES (null,?,?,?,?,?,?,?,?,?,?,?)";
+
+		Object[] date = { pro.getProName(), pro.getProType(),
+				pro.getProPrice(), pro.getProNumber(), pro.getStoId(),
+				pro.getProMessage(), pro.getProStatic(),
+				pro.getProGroundDate(),pro.getProNumber(), pro.getProImg(),pro.getProBrand() };
+		// 返回int值，如果>0,添加成功；=0,添加失败
+		return updateOne(sql, date);
+	}
+	
+	/**
+	 * 根据id删除产品
+	 * @param proId
+	 * @return
+	 */
+	public int deletProduct(int proId){
+		String sql = "delete from product where proId=?";
+		return this.updateOne(sql, proId);
+	}
+	
+
+	/**
+	 * 改变商品信息
+	 * @param pro
+	 * @return
+	 */
+	public int updateProduct(Product pro) {
+		String sql = "UPDATE `product` SET `proName`=?, `proType`=?,`proPrice`=?,`proNumber`=?, `stoId`=?, `proMessage`=?, `proStatic`=?, `proGroundDate`=?,proSalesNumber=?, `proImg`=?, `proBrand`=? WHERE (`proId`=?)";
+		Object[] date = { pro.getProName(), pro.getProType(),
+				pro.getProPrice(), pro.getProNumber(), pro.getStoId(),
+				pro.getProMessage(), pro.getProStatic(),
+				pro.getProGroundDate(),pro.getProSalesNumber(), pro.getProImg(),pro.getProBrand(), pro.getProId() };
+		return updateOne(sql, date);
+	}
+	
+	
+	/**
+	 * 根据商品id查找商品
+	 * @param proId
+	 * @return
+	 */
+	public Product selectProductByProId(int proId){
+		String sql = "select * from product where proId = ?";
+		return this.selectOne(sql,proId);
+	}
+	/**
+	 * 根据商品名模糊查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProName(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ? and proStatic='在售'";
+		return this.selectAll(sql,name);
+	}
+	
+	
+	
+	/**
+	 * 查询所有商品
+	 */
+	public List<Product> selectAllProduct() {
+
+		String sql = "select * from product";
+		return selectAll(sql);
+	}
+	/**
+	 * 根据类别查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByType(int proType){
+		String sql="select * from product where proType=? and proStatic='在售'";
+		return this.selectAll(sql, proType);
+	}
+	/**
+	 * 根据类别查找5个
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByTypeFromIndex(int proType){
+		String sql="select * from product where proType=? limit 0,5";
+		return this.selectAll(sql, proType);
+	} 
+	/**
+	 * 根据价格区间查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByPricre(double price1,double price2){
+		String sql="select * from product where proPrice between ? and ?";
+		Object obj[]={price1,price2};
+		return this.selectAll(sql, obj);
+	}
+	/**
+	 * 根据店铺id查询
+	 * @param 
+	 * @return
+	 */
+	public List<Product> selectProductByStoId(int stoId){
+		String sql="select * from product where stoId=?";
+		return this.selectAll(sql, stoId);
+	}
+	
+	
+	
+	/**
+	 * 根据店铺id查询
+	 * @param 
+	 * @return
+	 */
+
+	
+	/**
+	 * 根据产品状态查询
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByProStatic(String proStatic){
+		String sql="select * from product where proStatic=?";
+		return this.selectAll(sql, proStatic);
+	}
+	
+	/**
+	 * 根据产品牌查找
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByProBrand(String proBrand){
+		String sql="select * from product where proStatic=?";
+		return this.selectAll(sql, proBrand);
+	}
+	
+	/**
+	 * 根据商品名查找（价格降序
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProNamePriceLow(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ? and proStatic='在售' order by proPrice desc";
+		return this.selectAll(sql,name);
+	}
+	
+	/**
+	 * 根据类别id和价格降序查找
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByTypeIdPriceLow(int typeid){
+		String sql="select * from product where proType=? and proStatic='在售' order by proPrice desc";
+		return this.selectAll(sql, typeid);
+	}
+	
+	/**
+	 * 根据商品名查找（价格升序）
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProNamePriceHigh(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ? and proStatic='在售' order by proPrice ";
+		return this.selectAll(sql,name);
+	}
+	
+	/**
+	 * 根据类别id和价格升序查找
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByTypeIdPriceHigh(int typeid){
+		String sql="select * from product where proType=? and proStatic='在售' order by proPrice";
+		return this.selectAll(sql,typeid);
+	}
+	
+	/**
+	 * 根据商品名查找（日期降序）
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProNameDateLow(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ? and proStatic='在售' order by proGroundDate desc";
+		return this.selectAll(sql,name);
+	}
+	
+	/**
+	 * 根据类别id和日期降序
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByTypeIdDateLow(int typeid){
+		String sql="select * from product where proType=? and proStatic='在售' order by proGroundDate desc";
+		return this.selectAll(sql, typeid);
+	}
+	
+	/**
+	 * 根据商品名查找（销量降序）
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProNameSalesLow(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ? and proStatic='在售' order by proSalesNumber desc";
+		return this.selectAll(sql,name);
+	}
+	/**
+	 * 根据类别id和销量降序
+	 * @param
+	 * @return
+	 */
+	public List<Product> selectProductByTypeIdSalesLow(int typeid){
+		String sql="select * from product where proType=? and proStatic='在售' order by proSalesNumber desc";
+		return this.selectAll(sql, typeid);
+	}
+	/**
+	 * 根据商店id和产品名查找
+	 * @param
+	 * @return
+	 */
+	public Product selectProductByProNameStoId(String proName,int stoId){
+		String sql="select * from product where proName=? and stoId=?";
+		return this.selectOne(sql,proName,stoId);
+	}
+	
+}

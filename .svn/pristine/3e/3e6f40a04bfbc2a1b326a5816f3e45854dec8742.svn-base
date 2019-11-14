@@ -1,0 +1,7 @@
+package com.qlgshopping.dao;
+
+import com.qlgshopping.entity.EvaLike;
+
+public class EvaLikeDao extends BaseDao<EvaLike> {
+
+}

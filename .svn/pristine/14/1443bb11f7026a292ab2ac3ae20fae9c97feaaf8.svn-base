@@ -1,0 +1,35 @@
+package com.qlgshopping.dao;
+
+import com.qlgshopping.entity.OrderInfo;
+
+public class OrderInfoDao extends BaseDao<OrderInfo> {
+	/**
+	 * 将一个订单对象插入到数据库中
+	 * @param odif
+	 * @return
+	 */
+	public int insertOrderinfo(OrderInfo odif){
+		String sql="insert into OrderInfo values (null,?,?,?,?,?)";
+		Object obj[]={odif.getOrdId(),odif.getProId(),odif.getProNumber(),odif.getOdifPrice(),odif.getOdifEvaluate()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 根据odifId删除某一项数据
+	 * @param odifId
+	 * @return
+	 */
+	public int deleteByOdifId(int odifId){
+		String sql="delete from orderinfo where odifId=?";
+		return this.updateOne(sql, odifId);
+	}
+	/**
+	 * 根据id更新购买的数量和价格
+	 * @param odif
+	 * @return
+	 */
+	public int updateNumberPrice(OrderInfo odif){
+		String sql="update orderinfo set proNumber=?,odifPrice=? where odifId=?";
+		Object[] obj={odif.getProNumber(),odif.getOdifPrice(),odif.getOdifId()};
+		return this.updateOne(sql, obj);
+	}
+}

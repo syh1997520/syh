@@ -1,0 +1,7 @@
+package com.qlgshopping.dao;
+
+import com.qlgshopping.entity.MyHistory;
+
+public class MyHistoryDao extends BaseDao<MyHistory> {
+
+}

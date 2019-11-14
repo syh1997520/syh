@@ -1,0 +1,85 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.dao.TypeDao;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.entity.Type;
+
+public class TypeService {
+	private TypeDao tyDao=new TypeDao();
+	private ProductDao proDao=new ProductDao();
+	/**
+	 * 加载type类的外键
+	 * @param type
+	 */
+public void loadTypeForeignerData(Type type){
+	type.setBeyondType(tyDao.selectBytypeId(type.getTypeBeyondId()));
+	type.setProductList(new ArrayList<Product>(proDao.selectProductByType(type.getTypeId())));
+	type.setNextRankIdList(new ArrayList<Type>(tyDao.selectBytypeBeyondId(type.getTypeId())));
+}
+
+/**
+ * 得到所有类型
+ * 
+ */
+public List<Type> selectAllType(){
+	return tyDao.selectAllType();	
+}
+
+/**
+ * 增加类型
+ * @param type
+ * @return
+ */
+public boolean insertType(Type type){
+if(tyDao.insertType(type)>0){
+	return true;
+}
+return false;
+	
+}
+
+/**
+ * 删除类型
+ * @param TypeId
+ * @return
+ */
+public boolean deleteType(int TypeId){
+	if(tyDao.deleteType(TypeId)>0){
+		return true;
+	}else{
+		return false;
+	}
+	}
+
+/**
+ * 根据类型编号查找类别
+ * @param typeId
+ * @return
+ */
+public Type selectBytypeId(int typeId){
+	return tyDao.selectBytypeId(typeId);
+	
+}
+/**
+ * 根据类别等级查找类别
+ * @param typeRank
+ * @return
+ */
+public List<Type> selectBytypeRank(int typeRank){
+	return tyDao.selectBytypeRank(typeRank);
+}
+
+/**
+ * 根据商品的上一级类别查找类别
+ * @param typeBeyondId
+ * @return
+ */
+public List<Type> selectBytypeBeyondId(int typeBeyondId){
+	return tyDao.selectBytypeBeyondId(typeBeyondId);
+	
+}
+}

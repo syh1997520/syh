@@ -1,0 +1,72 @@
+﻿package com.alipay.config;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+/* *
+ *类名：AlipayConfig
+ *功能：基础配置类
+ *详细：设置帐户有关信息及返回路径
+ *修改日期：2017-04-05
+ *说明：
+ *以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
+ *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
+ */
+
+public class AlipayConfig {
+	
+//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+	// 应用ID,您的APPID，收款账号既是您的APPID对应支付宝账号
+	public static String app_id = "2016101200666795";
+	
+	// 商户私钥，您的PKCS8格式RSA2私钥
+    public static String merchant_private_key = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCfjjng0X79FEPYVWWKTwxteHWFwu25JjCnNZ50dSBwlrD3Dy/RZYJcj7soZMc5mIEMKV/TeBbycsEwT4CUe9EaS4o0oAXKEvz9FXlqq2WSCttUNVIdOzzQvK5KUaY2IH8IRMSCC02xcsT6arDX3p6jpqoBbBml1XVsJi+hkKGn36bcQMZwS18qJi7GD9RxgwCFRBhhA8nd6WvYCySxTWNSEGp75yr1PznwO1y+AZwPukje0yQkcxy7uWVoVTnZrEj5LtzGfbxLwdxS52tGuJXshzVpm21sVpF6QOe8OcrLWbv20xxAuNfqbyNVjVEJMgae0u9N4XCUNQYzTnfW60TBAgMBAAECggEADujPZ76ryyJVpKV2M5JnauNSuAkbBa4X5cgQ4nj/awXpy2xT35FIuTWFG6UvKKajiGtlVPFn04f9nXIQZc+cHoToiTpa0CMuGMgk7F7PwvHYxOmmnqymZir7bl5q1av7st4aLry3qdk7ptrJY6Kd2FT+ldtwGhr0OgLneIV3VaReA4unYOoDfCicFL+9ZlcpyP4+Z95fT+iXWP/e3irZUo2Ce+GKoSSBnIvV5C/PYhqQ44Rs2OP1UzRmOkrr4VOsgBWOPdEIUmb4aIkb9xn8N4xwIuH36FXZM3Zrf/vqeI+mkt3yhvgNvKSZG50qrDYrRx7zkxTPbP41NOK+lK3ssQKBgQD2XvSNoEc+ZjOooG50S35PAccg5giiKujb1VPs87AYEDOXKqxSo5tQDgwPvJIfW6kvNcJiOo7mTzb/hnrtZaG3xIBiu0MKy+UeTNRMDXIHwUTQbERceTsGF1+cFfCDXBrK0ZkiudTvp6Q0dhzvpsqxC46E3TDamNHvPviTuXmAtwKBgQClyqWOvDoe1dXA8s5D+FigyTbDY7TLIt7RKAlS6S9KXNUXJZY0Vwb0X7Mg3GkmrUwAKEIRyRWdSymMkAnc6cbFN/CYVdXxZc6UPdwWr+ny7t5qXmbVqSB/IALywpG++G/4kI3bOTJMub/S8JEO5EqYZ93NguZSsBLnVlK8gpX+RwKBgQC7D53farKtTiwq/KTg5/EfS9pFwGMNvkbPo0n1v5EUtDh3ro7osBBc2E2QJT1NUetDTS4qJwwZEkxP92uelGwVe71/OW/N4sI0H2GR3SOXf8cf+RRuoh2OonCVspLLKkOtezcqhq6GyGKE8qlFzP5ZLs0nVEqjryS24rkacNkwQQKBgECLNgzthor+oKrvXBHmG0rtSt6icH4s4yX2OjsHARwoK+VJAsL5poF4yFngtScTjGT7R015RWrpGhHY+Z4BfRrGfmov8Ix8IAJiWs6SSbgD+p7ahZpkr3wOUFeGHAuG2MCiNjfEeqqYHe/XLAHqKohO13DspxJF7fYWCzvMcux9AoGBAIt++zCFpH01aemM4uBpd/4hF7wASvMkCnKbdgQbhoSmcaapHVybGqcuBIEonyZ+RjEA1loa4LvSDkyql78a+ZWfbX9+ZiF4eGFT1FDjTkqkJE50PGvo6nLFhRa5DQZ9wAs+m7M7c9JAC5XisxwXhyPupmvwTgMo8MI6lOk7pCJq";
+	
+	// 支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
+    public static String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo6U0updhfdMTA/M8ZoAYD2Z1hjhyyuMt3mfjSFiUI21n3RJ7px7q1Yu31X3vYtbM7qX0LZNF7xVv+ArY0Nc5TKCVcu3pxjLMm8HA+ukAjqXUYVlTsPzsYjVlnCcactvQGGAlGmG2Hbo5TusvUHW3slJyV2+ymj8Ys4y0kFvkCPRrw3tzz7AOB7EcZjNG/sh+ENfWu8qKTYOg+q6rM5fNZr+CJ5ndDVu+VxkssrPqIxh7LWaDI3Tlmxx/int/ll549S3rl2h46pSJAsZjAFQNyVzjp+r4k6BVONS5ouCTtS09c0jVoCuhLl8sPD1iDbBYVfIfwJDl8fwFEyhJWyK/wwIDAQAB";
+
+	// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+	//public static String notify_url = "http://工程公网访问地址/alipay.trade.page.pay-JAVA-UTF-8/notify_url.jsp";
+    public static String notify_url = "http://localhost:8888/qlgshopping2.0/front/notify_url.jsp";
+	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+	//public static String return_url = "http://工程公网访问地址/alipay.trade.page.pay-JAVA-UTF-8/return_url.jsp";
+    public static String return_url = "http://localhost:8888/qlgshopping2.0/front/payOrderServlet";
+	// 签名方式
+	public static String sign_type = "RSA2";
+	
+	// 字符编码格式
+	public static String charset = "utf-8";
+	
+	// 支付宝网关
+	public static String gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
+	
+	// 支付宝网关
+	public static String log_path = "C:\\";
+
+
+//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    /** 
+     * 写日志，方便测试（看网站需求，也可以改成把记录存入数据库）
+     * @param sWord 要写入日志里的文本内容
+     */
+    public static void logResult(String sWord) {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(log_path + "alipay_log_" + System.currentTimeMillis()+".txt");
+            writer.write(sWord);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+

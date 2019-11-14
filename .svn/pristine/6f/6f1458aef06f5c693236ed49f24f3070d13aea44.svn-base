@@ -1,0 +1,110 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.dao.EvaLikeDao;
+import com.qlgshopping.dao.EvaluteDao;
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.dao.UserInfoDao;
+import com.qlgshopping.entity.EvaLike;
+import com.qlgshopping.entity.Evalute;
+
+public class EvaluteService {
+	EvaluteDao eDao=new EvaluteDao();
+	UserInfoDao uDao=new UserInfoDao();
+	ProductDao pDao=new ProductDao();
+	EvaLikeDao elDao=new EvaLikeDao();
+	
+	/**
+	 * 加载外键
+	 * @param eva
+	 * @return
+	 */
+	private void loadForeignEvaluteData(Evalute evalute){
+		evalute.setOdifId(evalute.getOdifId());
+		evalute.setUserInfo(uDao.selectUserById(evalute.getUserId()));
+		evalute.setProduct(pDao.selectProductByProId(evalute.getProId()));
+		evalute.setEvaDate(evalute.getEvaDate());
+		
+	}
+	
+	/**
+	 * 将一个evalute对象插入数据库
+	 * @param eva
+	 * @return
+	 */
+	public boolean insertEvalute(Evalute eva){
+		if(eDao.insertEvalute(eva)>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 根据id删除相应数据
+	 * @param evaId
+	 * @return
+	 */
+	public boolean deleteByEvaId(int evaId){
+		if(eDao.deleteByEvaId(evaId)>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 根据id修改评价的内容和星级
+	 * @param eva
+	 * @return
+	 */
+	public boolean updateMsgScore(Evalute eva){
+	if(eDao.updateMsgScore(eva)>0){
+		return true;
+	}
+	return false;
+	}
+	/**
+	 * 根据评价id获取对象
+	 * @param evaId
+	 * @return
+	 */
+	public Evalute selectByevaId(int evaId){
+		return eDao.selectByevaId(evaId);
+		
+	}
+	/**
+	 * 根据订单详情id获取对象
+	 * @param odifId
+	 * @return
+	 */
+	public Evalute selectByodifId(int odifId){
+		return eDao.selectByodifId(odifId);
+		
+	}
+	/**
+	 * 根据用户Id获取集合
+	 * @param userId
+	 * @return
+	 */
+	public List<Evalute> selectAllByuserId(int userId){
+		return eDao.selectAllByuserId(userId);
+		
+	}
+	/**
+	 * 根据商品id获取集合
+	 * @param proId
+	 * @return
+	 */
+	public List<Evalute> selectAllByproId(int proId){
+		return eDao.selectAllByproId(proId);
+		
+	}
+	/**
+	 * 根据是否被举报获取评价
+	 * @param evaMsg
+	 * @return
+	 */
+	public List<Evalute> selectAllByevaMsg(String evaMsg){
+		return eDao.selectAllByevaMsg(evaMsg);
+		
+	}
+}

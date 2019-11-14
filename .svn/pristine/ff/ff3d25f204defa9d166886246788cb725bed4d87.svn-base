@@ -1,0 +1,184 @@
+.rewdiv{
+	width: 1108px;
+	height: 150px;
+	border-bottom: 1px solid;
+}
+
+.rewdiv_left{
+	width: 140px;
+	height: 25px;
+	float: left;
+	text-align: center;
+	font-size: 16px;
+}
+
+.rewdiv_left img{
+	border-radius: 30px;
+}
+
+.rewdiv_right{
+	width: 810px;
+	height: 144px;
+	float: left;
+}
+.rewdiv_right_top{
+	width: 200px;
+	height: 20px;
+}
+.rewdiv_right_top li{
+	display: block;
+	float: left;
+}
+
+.rewdiv_right_mid{
+	width: 810px;
+	height: 60px;
+	margin-top: 10px;
+}
+.rewdiv_right_bottom{
+	width: 500px;
+	height: 18px;
+	margin-top: 13px;
+}
+
+.rewdiv_right_bottom_span1{
+	display: block;
+	float: left;
+}
+
+.rewdiv_right_bottom_span2{
+	display: block;
+	float: right;
+}
+
+.evagood{
+	width: 50px;
+	height: 144px;
+	float: right;
+	margin-right: 50px;
+	text-align: center;
+}
+
+#orderTab thead th{
+	text-align: center;
+}
+#orderTab td{
+	text-align: center;
+	line-height: 40px;
+}
+
+
+.orderinfo td{
+	height: 109px;
+	text-align: center;
+}
+
+.infotr td{
+	height:110px ;
+	line-height: 110px;
+	vertical-align: middle!important;
+}
+.infotp td{
+	background-color: #ececec;
+}
+
+.infosace td{
+	height: 30px;
+}
+
+.myfoot{
+	width: 200px;
+	height: 330px;
+	float: left;
+	margin-left: 20px;
+}
+.myfoot_date{
+	width: 200px;
+	height: 45px;
+}
+.myfoot_date_span1{
+	font-size: 30px;
+	color: #000000;
+	font-weight: 700;
+}
+.myfoot_img{
+	width: 195px;
+	height: 195px;
+}
+.myfoot_proinfo{
+	background-color: #fff;
+	width: 195px;
+	height: 60px;
+}
+
+.myfoot_proinfo_price{
+	display: block;
+	color: red;
+	font-size: 14px;
+}
+
+.myfoot_proinfo_introduce{
+	color: #999;
+	font-size: 13px;
+}
+ .cartspace td{
+ 	height: 10px;
+ }
+
+.cartop td{
+	height: 38px;
+	text-align: left!important;
+	color: #3c3c3c!important;
+}
+.cartop td a{
+	text-decoration: none!important;
+	color: #3c3c3c!important;
+}
+.cartproprice{
+	font-weight: 700;
+	color: #000000;
+}
+ .carprocost{
+ 	color: #f40;
+ 	font-weight: 700;
+ 	
+ }
+ .cartinfo td{
+ 	border: 1px solid #e7e7e7;
+ 	background-color: #fcfcfc;
+ 	height:110px ;
+	line-height: 110px;
+	vertical-align: middle!important;
+
+ }
+
+.addressdiv{
+	width: 237px;
+	height: 106px;
+	border: 1px ;
+	float: left;
+	margin-left: 20px;
+	border: 1px solid gray;
+}
+.addrtop{
+	width: 237px;
+	height: 34px;
+	text-align: center;
+	font-weight: 700;
+	line-height: 34px;
+	border-bottom: 1px solid;
+}
+
+.addrinfospan{
+	display: block; 
+	float: left;
+	color: #333;
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.addspan{
+	width: 1140px;
+	height: 40px;
+	float: left;
+}

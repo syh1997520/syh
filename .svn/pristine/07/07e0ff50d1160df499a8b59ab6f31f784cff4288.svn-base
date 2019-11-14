@@ -1,0 +1,153 @@
+package com.qlgshopping.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.Page;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.service.OrderTableService;
+import com.qlgshopping.service.ProductService;
+
+public class ShopServlet extends HttpServlet {
+  ProductService pSer=new ProductService();
+  OrderTableService oSer=new OrderTableService();
+	/**
+	 * Constructor of the object.
+	 */
+	public ShopServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+                  String op=request.getParameter("op");
+                  if(op.equals("query")){
+                	  this.query(request, response);
+                  }else if(op.equals("del")){
+                	  this.del(request, response);
+                  }else if(op.equals("queryOrd")){
+                	  this.queryOrd(request, response);
+                  }
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to post.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+              this.doGet(request, response);
+	}
+	
+	
+	public void queryOrd(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+	
+		int currentPage=1;
+		int pageSize=5;
+		int stoId=2;
+		String strcurrentPage=request.getParameter("currentPage");
+		if(strcurrentPage!=null&&!"".equals(strcurrentPage)){
+			currentPage=Integer.parseInt(strcurrentPage);
+		}
+		String strpageSize=request.getParameter("pageSize");
+		if(strpageSize!=null&&!"".equals(strpageSize)){
+			pageSize=Integer.parseInt(strpageSize);
+		}
+		
+		Page<OrderTable> page=oSer.getPage(stoId, currentPage, pageSize);
+		Gson gson=new Gson();
+		String gs=gson.toJson(page);
+		response.getWriter().println(gs);
+		
+	}
+	
+	
+	public void del(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int proId=0;
+		String msg="";
+		String strproId=request.getParameter("proId");
+		if(strproId!=null&&!"".equals(strproId)){
+			proId=Integer.parseInt(strproId);
+		}
+		if(pSer.deletProduct(proId)){
+			msg="请完成该产品所有销售记录后在进行下架";
+		}else{
+			msg="该产品下架成功";
+		}
+		request.setAttribute("msg", msg);
+		this.query(request, response);
+	}
+	
+	
+	
+	public void query(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+	//获取当前页
+		int stoId=2;
+		int currentPage=1;
+		int pageSize=2;
+		String strcurrentPage=request.getParameter("currentPage");
+		
+	
+		if(strcurrentPage!=null&&!"".equals(strcurrentPage)){
+			currentPage=Integer.parseInt(strcurrentPage);
+		}
+		String strpageSize=request.getParameter("pageSize");
+		
+		if(strpageSize!=null&&!"".equals(strpageSize)){
+			pageSize=Integer.parseInt(strpageSize);
+		}
+		Page<Product> page=pSer.getPage(stoId,currentPage, pageSize);
+		
+		
+		Gson gson=new Gson();
+		String gs=gson.toJson(page);
+		response.getWriter().println(gs);
+		
+		
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+
+}

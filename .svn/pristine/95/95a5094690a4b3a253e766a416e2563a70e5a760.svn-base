@@ -1,0 +1,48 @@
+package com.qlgshopping.service;
+
+import java.util.List;
+
+import com.qlgshopping.dao.MyHistoryDao;
+import com.qlgshopping.entity.MyHistory;
+
+public class MyHistoryService {
+	MyHistoryDao mDao=new MyHistoryDao();
+	/**
+	 * 插入新的足迹
+	 * @param mh
+	 * @return
+	 */
+public boolean insertMyHistory(MyHistory mh){
+	if(mDao.insertMyHistory(mh)>0){
+		return true;
+	}
+	return false;
+}
+/**
+ * 根据足迹id删除足迹
+ * @param hisId
+ * @return
+ */
+public boolean deleteMyHistoryByHisId(int hisId){
+	if(mDao.deleteMyHistoryByHisId(hisId)>0){
+		return true;
+	}
+	return false;
+}
+/**
+ * 根据足迹id查找足迹
+ * @param hisId
+ * @return
+ */
+public MyHistory selectByHisId(int hisId){
+	return mDao.selectByHisId(hisId);
+}
+/**
+ * 根据用户获取足迹列表（未删除的足迹）
+ * @param hisFromId
+ * @return
+ */
+public List<MyHistory> selectByHisFromId(int hisFromId){
+	return mDao.selectByHisFromId(hisFromId);
+}
+}

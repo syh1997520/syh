@@ -1,0 +1,77 @@
+package com.qlgshopping.dao;
+/*
+ * 获取类别信息
+ */
+
+import java.util.List;
+
+import com.qlgshopping.entity.Type;
+
+
+public class TypeDao extends BaseDao<Type>  {
+
+	/**
+	 * 得到所有类型
+	 * 
+	 */
+	public List<Type> selectAllType(){
+		String sql = "select* from type";
+		return selectAll(sql);	
+	}
+
+	/**
+	 * 增加类型
+	 * @param type
+	 * @return
+	 */
+	public int insertType(Type type){
+		String sql = "insert into  Type values(?,?,?,?)";
+		Object[] date = {type.getTypeId(),type.getTypeName(),type.getTypeRank(),type.getTypeBeyondId()};
+		return this.updateOne(sql, date);
+		
+	}
+	
+	/**
+	 * 删除类型
+	 * @param TypeId
+	 * @return
+	 */
+	public int deleteType(int TypeId){
+		String sql = "delete  from Type where TypeId=?";
+		return this.updateOne(sql, TypeId);
+		}
+	
+	/**
+	 * 根据类型编号查找类别
+	 * @param typeId
+	 * @return
+	 */
+	public Type selectBytypeId(int typeId){
+		String sql = "select * from Type where typeId=?";
+		return this.selectOne(sql, typeId);
+		
+	}
+	/**
+	 * 根据类别等级查找类别
+	 * @param typeRank
+	 * @return
+	 */
+	public List<Type> selectBytypeRank(int typeRank){
+		String sql = "select * from Type where typeRank=?";
+		
+		return this.selectAll(sql, typeRank);
+		
+	}
+	
+	/**
+	 * 根据商品的上一级类别查找类别
+	 * @param typeBeyondId
+	 * @return
+	 */
+	public Type selectBytypeBeyondId(int typeBeyondId){
+		String sql = "select * from Type where typeBeyondId=?";
+		return this.selectOne(sql, typeBeyondId);
+		
+	}
+
+}

@@ -1,0 +1,92 @@
+package com.qlgshopping.entity;
+/**
+ * 收货地址表
+ * @author Administrator
+ *
+ */
+public class ReceiveAddress {
+	
+	private int recId;
+	private int userId;
+	private String recName;
+	private String recAddress;
+	private String recPhone;
+	
+
+	
+	private UserInfo user;
+	
+	
+	
+	@Override
+	public String toString() {
+		return "receiveaddress [recId=" + recId + ", userId=" + userId
+				+ ", recName=" + recName + ", recAddress=" + recAddress
+				+ ", recPhone=" + recPhone +user.getUserId()+ "]";
+	}
+
+	public int getRecId() {
+		return recId;
+	}
+
+	public void setRecId(int recId) {
+		this.recId = recId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public String getRecName() {
+		return recName;
+	}
+
+	public void setRecName(String recName) {
+		this.recName = recName;
+	}
+
+	public String getRecAddress() {
+		return recAddress;
+	}
+
+	public void setRecAddress(String recAddress) {
+		this.recAddress = recAddress;
+	}
+
+	public String getRecPhone() {
+		return recPhone;
+	}
+
+	public void setRecPhone(String recPhone) {
+		this.recPhone = recPhone;
+	}
+
+	public UserInfo getUser() {
+		return user;
+	}
+
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
+
+	public ReceiveAddress(){
+		user = new UserInfo();
+	}
+	
+	public ReceiveAddress(int recId,int userId,String recName,String recAddress,String recPhone){
+		super();
+		this.recId = recId;
+		this.userId = userId;
+		this.recName = recName;
+		this.recAddress = recAddress;
+		this.recPhone = recPhone;
+		
+	}
+	
+	
+
+}

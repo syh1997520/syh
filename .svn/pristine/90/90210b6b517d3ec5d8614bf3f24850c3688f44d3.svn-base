@@ -1,0 +1,106 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.dao.BusinessDao;
+import com.qlgshopping.dao.OrderTableDao;
+import com.qlgshopping.dao.ProductDao;
+import com.qlgshopping.dao.StoreDao;
+import com.qlgshopping.dao.TypeDao;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.entity.Store;
+
+public class StoreService {
+	private StoreDao sDao=new StoreDao();
+	private BusinessDao busDao=new BusinessDao();
+	private OrderTableDao odtDao=new OrderTableDao();
+	private ProductDao proDao=new ProductDao();
+	private TypeDao tyDao=new TypeDao();
+	/**
+	 * 查找所有店铺
+	 * @return
+	 */
+		public List<Store> selectAllStore(){
+			
+			return sDao.selectAllStore();
+					
+		}
+		/**
+		 * 新增店铺
+		 * @param store
+		 * @return
+		 */
+		public boolean insertStor(Store store){
+			if(sDao.insertStor(store)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 删除店铺
+		 * @param stoId
+		 * @return
+		 */
+		public boolean deleteStore(int stoId){
+			if(sDao.deleteStore(stoId)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 修改店铺
+		 * @param store
+		 * @return
+		 */
+		public boolean updateScore(Store store){
+			if(sDao.updateScore(store)>0){
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * 根据店铺id查找店铺
+		 * @param stoId
+		 * @return
+		 */
+		public Store selectBystoId(int stoId){
+			return sDao.selectBystoId(stoId);
+		}
+		/**
+		 * 根据商家id查找店铺
+		 * @param busId
+		 * @return
+		 */
+		public List<Store> selectByBusId(int busId){
+			return sDao.selectByBusId(busId);
+		}
+		/**
+		 * 根据类别ID查找店铺集合
+		 * @param typeId
+		 * @return
+		 */
+		public List<Store> selectByStoType(int typeId){
+			return sDao.selectByStoType(typeId);
+		}
+		/**
+		 * 根据店铺状态查找店铺集合
+		 * @param stoExam
+		 * @return
+		 */
+		public List<Store> selectByStoExam(int stoExam){
+			return sDao.selectByStoExam(stoExam);
+		}
+		/**
+		 * 加载店铺类的外键
+		 * @param sto
+		 */
+		public void loadStoreForeignData(Store sto){
+			int stoId=sto.getStoId();
+			sto.setBus(busDao.selectBusinessByBusId(sto.getBusId()));
+			sto.setOrderTableList(new ArrayList<OrderTable>(odtDao.selectByStoId(stoId)));
+			sto.setProductList(new ArrayList<Product>(proDao.selectProductByStoId(stoId)));
+			sto.setType(tyDao.selectBytypeId(sto.getStoType()));
+		}
+}

@@ -1,0 +1,68 @@
+package com.qlgshopping.service;
+
+import java.util.List;
+
+import com.qlgshopping.dao.EvaLikeDao;
+import com.qlgshopping.entity.EvaLike;
+
+public class EvaLikeService {
+EvaLikeDao eDao=new EvaLikeDao();
+
+/**
+ * 插入新的点赞内容
+ * @param evalike
+ * @return
+ */
+public boolean insertEvaLike(EvaLike evalike){
+if(eDao.insertEvaLike(evalike)>0){
+	return true;
+}
+return false;
+}
+/**
+* 根据Likeid删除一条数据
+* @param likeId
+* @return
+*/
+public boolean deleteEvaLikeByLikeId(int likeId){
+if(eDao.deleteEvaLikeByLikeId(likeId)>0){
+	return true;
+}
+return false;
+}
+/**
+* 更新一条evalike
+* @param evalike
+* @return
+*/
+public boolean updateEvaLike(EvaLike evalike){
+if(eDao.updateEvaLike(evalike)>0){
+	return true;
+}
+return false;
+}
+/**
+* 根据likeid查找
+* @param likeId
+* @return
+*/
+public EvaLike selectEvaLikeByLikeId(int likeId){
+        return eDao.selectEvaLikeByLikeId(likeId);
+}
+/**
+* 查看某用户的点赞列表
+* @param likeFrom
+* @return
+*/
+public List<EvaLike> selectEvaLikeByLikeFrom(int likeFrom){
+return eDao.selectEvaLikeByLikeFrom(likeFrom);
+}
+/**
+* 根据评价的id返回点赞列表
+* @param likeFor
+* @return
+*/
+public List<EvaLike> selectEvaLikeByLikeFor(int likeFor){
+return eDao.selectEvaLikeByLikeFor(likeFor);
+}
+}

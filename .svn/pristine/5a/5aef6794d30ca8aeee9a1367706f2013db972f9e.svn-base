@@ -1,0 +1,143 @@
+package com.qlgshopping.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.qlgshopping.entity.UserInfo;
+
+public class UserInfoDao extends BaseDao<UserInfo> {
+	/**
+	 * 分页查询所有用户
+	 * @return
+	 */
+	
+	public ArrayList<UserInfo> selectAllByPage(int start,int pageSize){
+		String sql="select * from UserInfo where speakAble=1 limit ?,?";
+		Object obj[]={start,pageSize};
+		return (ArrayList<UserInfo>) this.selectAll(sql, obj);
+	}
+	/**
+	 * 分页总笔数
+	 * @return
+	 */
+	public long getTableSize(){
+		String sql="select count(*) from UserInfo where speakAble=1";
+		return this.getTableSize(sql);
+	}
+	
+	public ArrayList<UserInfo> selectAllByPageSpeak(int start,int pageSize){
+		String sql="select * from UserInfo where speakAble=0 limit ?,?";
+		Object obj[]={start,pageSize};
+		return (ArrayList<UserInfo>) this.selectAll(sql, obj);
+	}
+	/**
+	 * 分页总笔数
+	 * @return
+	 */
+	public long getTableSizeSpeak(){
+		String sql="select count(*) from UserInfo where speakAble=0";
+		return this.getTableSize(sql);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 查询所有用户
+	 * @return
+	 */
+	public List<UserInfo> selectAllUser(){
+		String sql="select * from userinfo";
+		return this.selectAll(sql);
+	}
+	/**
+	 * 根据用户id查询某个用户
+	 * @param userId
+	 * @return
+	 */
+	public UserInfo selectUserById(int userId){
+		String sql="select * from userinfo where userId=?";
+		return this.selectOne(sql, userId);
+	}
+	/**
+	 * 根据用户id删除用户
+	 * @param userId
+	 * @return
+	 */
+	public int deleteUserById(int userId){
+		String sql="delete  from userinfo where userId=?";
+		return this.updateOne(sql, userId);
+	}
+	/**
+	 * 插入新的用户(返回新用户的id)
+	 * @param user
+	 * @return
+	 */
+	public int insertUser(UserInfo user){
+		String sql="insert into userinfo values(null,?,?,?,?,?,?,?,?)";
+		Object[] obj={user.getUserPassword(),
+				user.getUserLoginName(), user.getUserGender(),
+				user.getUserName(), user.getUserPhoneNumber(),
+				user.getUserScore(),user.getUserimg(),user.getSpeakAble()};
+		 this.updateOne(sql, obj);
+		 String sql2="select LAST_INSERT_ID()";
+		 return this.getTableSize(sql2).intValue();
+	}
+	/**
+	 * 用户信息更新
+	 * @param user
+	 * @return
+	 */
+	public int updateUser(UserInfo user){
+		String sql="update  userinfo set userPassword=?,userLoginName=?,userGender=?,userName=?,userPhoneNumber=?,userScore=?,userimg=?,speakAble=? where userId=?";
+		Object[] obj={user.getUserPassword(),user.getUserLoginName(),user.getUserGender(),user.getUserName(),user.getUserPhoneNumber(),user.getUserScore(),user.getUserimg(),user.getSpeakAble(),user.getUserId()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 根据登录名查找用户
+	 * @param userLoginName
+	 * @return
+	 */
+	public UserInfo selectByLoginname(String userLoginName){
+		
+		String sql="select * from UserInfo where userLoginName = ?";
+		
+		return this.selectOne(sql, userLoginName);
+		
+	}
+	/**
+	 * 根据用户名和密码查找用户
+	 * @param userName
+	 * @param userPassword
+	 * @return
+	 */
+     public UserInfo selectByUsernamePassword(String userLoginName,String userPassword){
+		
+		String sql="select * from UserInfo where userLoginName = ? and userPassword = ?";
+		
+		return this.selectOne(sql, userLoginName,userPassword);
+		
+	}
+     /**
+      * 根据用户名查找用户
+      * @param userName
+      * @return
+      */
+     public UserInfo selectByUsername(String userName){
+ 		
+		String sql="select * from UserInfo where userName = ? ";
+		
+		return this.selectOne(sql, userName);
+		
+	}
+     /**
+      * 查找所有被禁言的用户
+      * @param speakAble
+      * @return
+      */
+     public List<UserInfo> selectAllByspeakAble(int speakAble){
+    	 String sql="select * from UserInfo where speakAble = 0";
+		return this.selectAll(sql, speakAble);
+     }
+}

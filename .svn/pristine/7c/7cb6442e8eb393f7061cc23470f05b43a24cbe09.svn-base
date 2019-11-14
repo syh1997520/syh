@@ -1,0 +1,67 @@
+package com.qlgshopping.dao;
+
+import java.util.List;
+
+import com.qlgshopping.entity.OrderInfo;
+
+public class OrderInfoDao extends BaseDao<OrderInfo> {
+	/**
+	 * 将一个订单对象插入到数据库中
+	 * @param odif
+	 * @return
+	 */
+	public int insertOrderinfo(OrderInfo odif){
+		String sql="insert into OrderInfo values (null,?,?,?,?,?)";
+		Object obj[]={odif.getOrdId(),odif.getProId(),odif.getProNumber(),odif.getOdifPrice(),odif.getOdifEvaluate()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 根据odifId删除某一项数据
+	 * @param odifId
+	 * @return
+	 */
+	public int deleteByOdifId(int odifId){
+		String sql="delete from orderinfo where odifId=?";
+		return this.updateOne(sql, odifId);
+	}
+	/**
+	 * 根据id更新购买的数量和价格
+	 * @param odif
+	 * @return
+	 */
+	public int updateNumberPrice(OrderInfo odif){
+		String sql="update orderinfo set proNumber=?,odifPrice=? where odifId=?";
+		Object[] obj={odif.getProNumber(),odif.getOdifPrice(),odif.getOdifId()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 根据订单详情id获取订单详情（返回单个对象）
+	 * @param odif
+	 * @return
+	 */
+	public OrderInfo selectByOrderInfoId(int odifId){
+		String sql="select * from orderinfo where odifId=?";
+		return this.selectOne(sql,odifId);
+	}
+	
+	/**
+	 * 根据订单表id获取订单详情（返回集合）
+	 * @param odif
+	 * @return
+	 */
+	public List<OrderInfo> selectByOrderTableId(int ordId){
+		String sql="select * from orderinfo where ordId=?";
+		return this.selectAll(sql,ordId);
+	}
+	/**
+	 * 根据订单表id与是否评价返回订单详情（返回集合）
+	 * @param odif
+	 * @return
+	 */
+	public List<OrderInfo> selectByOrderTableIdAndEva(int ordId,int odifEvaluate){
+		String sql="select * from orderinfo where ordId=? and odifEvaluate=?";
+		Object obj[]={ordId,odifEvaluate};
+		return this.selectAll(sql,obj);
+	}
+	
+}

@@ -1,0 +1,102 @@
+package com.qlgshopping.dao;
+
+import java.util.List;
+
+import com.qlgshopping.entity.Evalute;
+
+public class EvaluteDao extends BaseDao<Evalute> {
+	/**
+	 * 将一个evalute对象插入数据库
+	 * @param eva
+	 * @return
+	 */
+	public int insertEvalute(Evalute eva){
+		String sql="insert into Evalute values (null,?,?,?,?,?,?,?,?)";
+		Object obj[]={eva.getOdifId(),eva.getEvaMsg(),eva.getEvaScore(),eva.getUserId(),eva.getProId(),eva.getEvaDate(),eva.getLikeCount(),eva.getEvaReport()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 根据id删除相应数据
+	 * @param evaId
+	 * @return
+	 */
+	public int deleteByEvaId(int evaId){
+		String sql="delete from evalute where evaId=?";
+		return this.updateOne(sql, evaId);
+	}
+	/**
+	 * 根据id修改评价的内容和星级
+	 * @param eva
+	 * @return
+	 */
+	public int updateMsgScore(Evalute eva){
+		String sql="update Evalute set evaMsg=?,evaScore=? where evaId=?";
+		Object[] obj={eva.getEvaMsg(),eva.getEvaScore(),eva.getEvaId()};
+		return this.updateOne(sql, obj);
+	}
+	/**
+	 * 给某一评论点赞
+	 * @param evaId
+	 * @return
+	 */
+	public int getLikeAdd(int evaId){
+		String sql="update Evalute set likeCount=likeCount+1 where evaId=?";
+		return this.updateOne(sql, evaId);
+	}
+	/**
+	 * 根据评价id获取对象
+	 * @param evaId
+	 * @return
+	 */
+	public Evalute selectByevaId(int evaId){
+		String sql="select * from Evalute where evaId=?";
+		
+		return this.selectOne(sql, evaId);
+		
+	}
+	/**
+	 * 根据订单详情id获取对象
+	 * @param odifId
+	 * @return
+	 */
+	public Evalute selectByodifId(int odifId){
+		String sql="select * from Evalute where odifId=?";
+		
+		return this.selectOne(sql, odifId);
+		
+	}
+	/**
+	 * 根据用户Id获取集合
+	 * @param userId
+	 * @return
+	 */
+	public List<Evalute> selectAllByuserId(int userId){
+		String sql="select * from Evalute where userId=?";
+		
+		return this.selectAll(sql, userId);
+		
+	}
+	/**
+	 * 根据商品id获取集合
+	 * @param proId
+	 * @return
+	 */
+	public List<Evalute> selectAllByproId(int proId){
+		String sql="select * from Evalute where proId=?";
+		
+		return this.selectAll(sql, proId);
+		
+	}
+	/**
+	 * 根据是否被举报获取评价
+	 * @param evaMsg
+	 * @return
+	 */
+	public List<Evalute> selectAllByevaMsg(String evaMsg){
+		String sql="select * from Evalute where evaMsg=?";
+		
+		return this.selectAll(sql, evaMsg);
+		
+	}
+	
+}

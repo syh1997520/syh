@@ -1,0 +1,123 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+
+
+import com.qlgshopping.dao.OrderInfoDao;
+import com.qlgshopping.dao.OrderTableDao;
+import com.qlgshopping.dao.ReceiveAddressDao;
+import com.qlgshopping.dao.StoreDao;
+import com.qlgshopping.dao.UserInfoDao;
+import com.qlgshopping.entity.OrderInfo;
+import com.qlgshopping.entity.OrderTable;
+
+public class OrderTableService {
+  private OrderTableDao oDao=new OrderTableDao();
+  private StoreDao stoDao=new StoreDao();
+  private UserInfoDao userDao=new UserInfoDao();
+  private OrderInfoDao odifDao=new OrderInfoDao();
+  private ReceiveAddressDao recDao=new ReceiveAddressDao();
+  /**
+	 * 查询所有的方法
+	 * @return
+	 */
+	public ArrayList<OrderTable> selectAllOrderTable(){
+	   ArrayList<OrderTable> selectAllOrderTable = new ArrayList<OrderTable>(oDao.selectAllOrderTable());
+	   for(OrderTable orTab:selectAllOrderTable){
+		   this.loadOrderTableForeignerData(orTab);
+	   }
+	   return selectAllOrderTable;
+	}
+	/**
+	 * 根据ordId删除数据
+	 * @param ordId
+	 * @return
+	 */
+	public boolean deleteOrderTable(int ordId){
+		if(oDao.deleteOrderTable(ordId)>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 将对象插入到数据库
+	 * @param ord
+	 * @return
+	 */
+	public boolean insertOrdId(OrderTable ord){
+		if(oDao.insertOrdId(ord)>0){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 修改订单信息
+	 * @param ord
+	 * @return
+	 */
+	public boolean updatePayTimeStatic(OrderTable ord){
+		if(oDao.updatePayTimeStatic(ord)>0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 根据ordId删除数据
+	 * @param ordId
+	 * @return
+	 */
+	public OrderTable selectByOrderId(int ordId){
+		OrderTable selectByOrderId = oDao.selectByOrderId(ordId);
+		this.loadOrderTableForeignerData(selectByOrderId);
+		return selectByOrderId;
+	}
+	/**
+	 * 根据店铺id获取订单
+	 * @param ordId
+	 * @return
+	 */
+	public ArrayList<OrderTable> selectByStoId(int ordId){
+		ArrayList<OrderTable> selectAllOrderTable = new ArrayList<OrderTable>(oDao.selectByStoId(ordId));
+		for(OrderTable orTab:selectAllOrderTable){
+			  this.loadOrderTableForeignerData(orTab);
+		}
+		return selectAllOrderTable;
+	}
+	
+	/**
+	 * 根据用户id获取订单
+	 * @param ordId
+	 * @return
+	 */
+	public ArrayList<OrderTable> selectByUserId(int userId){
+		ArrayList<OrderTable> selectAllOrderTable = new ArrayList<OrderTable>(oDao.selectByUserId(userId));
+		for(OrderTable orTab:selectAllOrderTable){
+			  this.loadOrderTableForeignerData(orTab);
+		}
+		return selectAllOrderTable;
+	}
+	
+	/**
+	 * 根据用户id和订单获取订单
+	 * @param ordId
+	 * @return
+	 */
+	public ArrayList<OrderTable> selectByUserIdAndOrdStatic(int userId,String ordStatic){
+	ArrayList<OrderTable> selectAllOrderTable = new ArrayList<OrderTable>(oDao.selectByUserIdAndOrdStatic(userId, ordStatic));
+	for(OrderTable orTab:selectAllOrderTable){
+		  this.loadOrderTableForeignerData(orTab);
+	}
+	return selectAllOrderTable;
+	}
+	/**
+	 * 加载订单的外键
+	 * @param order
+	 */
+	public void loadOrderTableForeignerData(OrderTable order){
+		order.setStore(stoDao.selectBystoId(order.getStoId()));
+		order.setUser(userDao.selectUserById(order.getUserId()));
+		order.setOdifList(new ArrayList<OrderInfo>(odifDao.selectByOrderTableId(order.getOrdId())));
+		order.setReceiveAddress(recDao.selectByReceAddId(order.getOrdAddress()));
+	}
+}

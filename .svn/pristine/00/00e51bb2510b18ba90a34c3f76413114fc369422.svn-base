@@ -1,0 +1,38 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+
+import com.qlgshopping.dao.EvaLikeDao;
+import com.qlgshopping.dao.EvaluteDao;
+import com.qlgshopping.dao.MyHistoryDao;
+import com.qlgshopping.dao.OrderTableDao;
+import com.qlgshopping.dao.ReceiveAddressDao;
+import com.qlgshopping.dao.ShoppingCartDao;
+import com.qlgshopping.entity.EvaLike;
+import com.qlgshopping.entity.Evalute;
+import com.qlgshopping.entity.MyHistory;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.ReceiveAddress;
+import com.qlgshopping.entity.UserInfo;
+
+public class UserInfoService {
+	private EvaluteDao evaDao=new EvaluteDao();
+	private OrderTableDao ordTabDao=new OrderTableDao();
+	private ReceiveAddressDao recDao=new ReceiveAddressDao();
+	private ShoppingCartDao shopCartDao=new ShoppingCartDao();
+	private EvaLikeDao evalikeDao=new EvaLikeDao();
+	private MyHistoryDao mhDao=new MyHistoryDao();
+/**
+ * 给user对象的外键添加数据	
+ * @param user
+ */
+private void loadUserForeignData(UserInfo user){
+	int userId=user.getUserId();
+	user.setEvaluteList(new ArrayList<Evalute>(evaDao.selectAllByuserId(userId)));
+	user.setOrderTableList(new ArrayList<OrderTable>(ordTabDao.selectByUserId(userId)));
+	user.setReceiveAddress(new ArrayList<ReceiveAddress>(recDao.selectByUserId(userId)));
+	user.setShoppingCart(shopCartDao.selectByUserId(userId));
+	user.setLikeList(new ArrayList<EvaLike>(evalikeDao.selectEvaLikeByLikeFrom(userId)));
+	user.setHistoryList(new ArrayList<MyHistory>(mhDao.selectByHisFromId(userId)));
+}
+}

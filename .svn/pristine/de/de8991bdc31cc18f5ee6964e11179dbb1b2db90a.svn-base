@@ -1,0 +1,141 @@
+package com.qlgshopping.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.qlgshopping.entity.Page;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.entity.Store;
+import com.qlgshopping.service.ProductService;
+import com.qlgshopping.service.StoreService;
+
+public class BusinessServlet extends HttpServlet {
+    StoreService sSer=new StoreService();
+    ProductService pSer=new ProductService();
+	/**
+	 * Constructor of the object.
+	 */
+	public BusinessServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		this.doPost(request, response);
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to post.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+	String op=request.getParameter("op");
+	if(op.equals("query")){
+		this.query(request, response);
+	}if(op.equals("querySto")){
+		this.querySto(request, response);
+	}if(op.equals("queryPro")){
+		this.queryPro(request, response);
+	}
+	}
+	
+	public void queryPro(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+	
+		String stoName=request.getParameter("stoName");
+		if(stoName==null&&"".equals(stoName)){
+			return;
+		}
+		
+		Store store=sSer.selectBystoName(stoName);
+		int stoId=store.getStoId();
+		ArrayList<Product> pList=pSer.selectProductByStoId(stoId);
+		System.out.println(pList);
+		Gson gson=new Gson();
+		String gs=gson.toJson(pList);
+		response.getWriter().println(gs);
+		
+	}
+	
+	public void querySto(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int busId=2;
+		
+		ArrayList<Store> aList=sSer.selectByBusId(busId);
+		
+		
+		int length=aList.size();
+		
+
+	
+		
+		
+		request.setAttribute("aList", aList);
+		request.setAttribute("length", length);
+		request.getRequestDispatcher("businessproduct.jsp").forward(request, response);
+	}
+	public void query(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		int currentPage=1;
+		int busId=2;
+		int pageSize=10;
+		String strCurrentPage=request.getParameter("currentPage");
+		if(strCurrentPage!=null&&!"".equals(strCurrentPage)){
+			currentPage=Integer.parseInt(strCurrentPage);	
+		}
+		String strPageSize=request.getParameter("pageSize");
+		if(strPageSize!=null&&!"".equals(strPageSize)){
+			pageSize=Integer.parseInt(strPageSize);
+		}
+		Page<Store> page=sSer.getPage(busId,currentPage, pageSize);
+		
+		Gson gson=new Gson();
+		String gs=gson.toJson(page);
+		response.getWriter().println(gs);
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+
+}

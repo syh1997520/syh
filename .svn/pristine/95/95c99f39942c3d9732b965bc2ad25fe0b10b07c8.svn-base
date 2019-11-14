@@ -1,0 +1,44 @@
+package com.qlgshopping.dao;
+/*
+ * 获取类别信息
+ */
+
+import java.util.List;
+
+import com.qlgshopping.entity.Type;
+
+
+public class TypeDao extends BaseDao<Type>  {
+
+	/**
+	 * 得到所有类型
+	 * 
+	 */
+	public List<Type> selectAllType(){
+		String sql = "select* from type";
+		return selectAll(sql);	
+	}
+
+	/**
+	 * 增加类型
+	 * @param type
+	 * @return
+	 */
+	public int insertType(Type type){
+		String sql = "insert into  Type values(?,?,?,?)";
+		Object[] date = {type.getTypeId(),type.getTypeName(),type.getTypeRank(),type.getTypeBeyondId()};
+		return this.updateOne(sql, date);
+		
+	}
+	
+	/**
+	 * 删除类型
+	 * @param TypeId
+	 * @return
+	 */
+	public int deleteType(int TypeId){
+		String sql = "delete  from Type where TypeId=?";
+		return this.updateOne(sql, TypeId);
+		}
+
+}

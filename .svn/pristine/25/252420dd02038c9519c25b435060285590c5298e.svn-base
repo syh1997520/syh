@@ -1,0 +1,286 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="css/shop.css" type="text/css" rel="stylesheet" />
+<link href="css/Sellerber.css" type="text/css"  rel="stylesheet" />
+<link href="css/bkg_ui.css" type="text/css"  rel="stylesheet" />
+<link href="font/css/font-awesome.min.css"  rel="stylesheet" type="text/css" />
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" ></script>
+<script src="js/Sellerber.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script src="js/shopFrame.js" type="text/javascript"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/jquery.dataTables.bootstrap.js"></script>
+<script src="js/layer/layer.js" type="text/javascript"></script>
+<script src="js/laydate/laydate.js" type="text/javascript"></script>
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js" type="text/javascript"></script>
+<script src="js/respond.min.js"></script>
+<script src="js/css3-mediaqueries.js"  type="text/javascript"></script>
+  <![endif]-->
+<title>订单</title>
+
+</head>
+<body>
+<div class="margin order_style" id="page_style">
+<div class="sum_style margin-bottom ">
+ <ul class="clearfix">
+  <li class="col-xs-3 "><div class="sum_zone Amount">交易总额<span><em>￥</em>354465元</span></div></li>
+  <li class="col-xs-3 "><div class="sum_yifu Amount">已付金额<span><em>￥</em>35465元</span></div></li>
+  <li class="col-xs-3 "><div class="sum_daifu Amount">代付金额<span><em>￥</em>3545元</span></div></li>
+  <li class="col-xs-3 "><div class="sum_tuikuan Amount">退款金额<span><em>￥</em>3545元</span></div></li>
+ </ul>
+</div>
+<div class="status_order margin-bottom">
+  <a href="javascrpit:void" class="btn button_btn btn-info status_btn">所有订单(${page.totalRow })</a>
+  <a href="javascrpit:void" class="btn button_btn btn-info status_btn">已完成()</a>
+  <a href="javascrpit:void" class="btn button_btn btn-info status_btn">未完成(454)</a>
+  <a href="javascrpit:void" class="btn button_btn btn-info status_btn">代发货(454)</a>
+  <a href="javascrpit:void" class="btn button_btn btn-info status_btn">代付款(454)</a>
+ </div>
+<div class="operation clearfix">
+<button class="btn button_btn btn-danger" type="button" onclick=""><i class="fa fa-trash-o"></i>&nbsp;删除</button> 
+<div class="search  clearfix">
+ <label class="label_name">订单号：</label>
+ <input name="" type="text"  class="form-control col-xs-6" style=" width:250px;"/>
+  <label class="label_name">下单时间：</label>
+  <input class="inline laydate-icon " id="start" type="text"  style=" margin-right:10px; height:auto; float:left; width:150px;" />
+ <button class="btn button_btn bg-deep-blue " onclick=""  type="button"><i class="fa  fa-search"></i>&nbsp;搜索</button>
+</div>
+</div>
+<div class="List_display">
+ 
+  <table class="table table_list table_striped table-bordered" id="sample-table">
+  <thead>
+  <tr>
+  <th width="30"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
+   <th width="50">订单编号</th>
+     
+   <th width="150">下单用户</th>
+   <th width="80">消费金额</th>
+   <th width="150">下单时间</th>
+   <th width="150">发货时间</th>
+   <th width="">是否发货</th>
+   <th width="">收货地址</th>
+   <th width="150">操作</th>
+   </tr>   
+  </thead>
+  <tbody id="tBody">
+   <tr>
+   </tr>
+  </tbody>
+  <tfoot id="tFoot">
+  
+												<tr>
+													<td colspan="9" align="right">
+														<!-- 分页 -->
+
+														<ul class="pagination pagination-sm" id="ulpage">
+														
+														
+														</ul>
+														
+													</td>
+												</tr>
+												
+												
+												
+	</tfoot>
+  
+ </table>
+</div>
+</div>
+<div id="page" style="float:right; margin-right:50px">
+页面容量：
+	<select name="pageSize" id="pageSize">
+	<option  value="5">5</option>
+   <option  value="10">10</option>
+	<option  value="15">15</option>
+	</select>
+											
+</div>
+</body>
+</html>
+<script>
+//下拉事件
+$(function(){
+
+$(document).on("change","#pageSize",function(){
+			$("#ulPage").empty();
+			$("#ulpage li.active a").html(1);
+			var param ={"currentPage":$("#ulpage li.active a").html(),"pageSize":$(this).val()};
+			console.log("currentPage"+$("#ulpage li.active a").html());
+			$.get("shopServlet?op=queryOrd",param,function(data,status,xhr){
+				//AJAX数据处理
+				getPageData(data,status,xhr);
+				
+			});
+			
+			
+		});
+
+});
+
+
+
+$(function(){
+   $.get("shopServlet?op=queryOrd",function(data,status,xhr){
+			//AJAX数据处理
+			getPageData(data,status,xhr);
+			
+		});
+});
+
+//当前页
+
+$(function(){
+        $(document).on("click","#acurrentPage",function(){
+        
+        
+        var param ={"currentPage":$(this).html(),"pageSize":$("#pageSize").val()};
+			
+			$.get("shopServlet?op=queryOrd",param,function(data,status,xhr){
+				//AJAX数据处理
+				getPageData(data,status,xhr);
+				
+			});
+        
+        });
+
+});
+
+
+
+
+//上一页事件
+
+$(function(){
+		
+		$(document).on("click","#aprivPage",function(){
+			
+			var privPage = parseInt($("#ulpage li.active a").html())-1;
+			if(privPage<=0){
+				privPage=1;
+			}
+			
+			
+			var param ={"currentPage":privPage,"pageSize":$("#pageSize").val()};
+			$.get("shopServlet?op=queryOrd",param,function(data,status,xhr){
+				//AJAX数据处理
+				getPageData(data,status,xhr);
+				
+			});
+			
+			
+		});
+		
+		
+	});
+
+//下一页事件
+  $(function(){
+  $(document).on("click","#anextPage",function(){
+        var nextPage=parseInt($("#ulpage li.active a").html())+1;
+       if(nextPage>$("#allPage").val()){
+				nextPage=$("#allPage").val();
+			}
+			
+			var param ={"currentPage":nextPage,"pageSize":$("#pageSize").val()};
+			$.get("shopServlet?op=queryOrd",param,function(data,status,xhr){
+				//AJAX数据处理
+				getPageData(data,status,xhr);
+				
+			});
+  });
+  
+  
+  });
+
+
+
+
+function getPageData(data,status,xhr){
+       
+         var data=JSON.parse(data);
+         var oList=data.aList;
+         console.log(data);
+          $("#sample-table tbody").empty(); 
+         $.each($(oList),function(index,element){
+              	var obj='<tr>';
+              		obj+='<td><label><input type="checkbox" class="ace"><span class="lbl"></td>';
+              		obj+='<td>'+element.ordId+'</td>';
+              		obj+='<td>'+element.stoId+'</td>';
+              		obj+='<td>'+element.ordPrice+'</td>';
+              		obj+='<td>'+element.ordTime+'</td>';
+              		obj+='<td>'+element.payTime+'</td>';
+              		obj+='<td>'+element.ordStatic+'</td>';
+              		obj+='<td>'+element.ordAddress+'</td>';
+              		
+              		
+              		obj+='<td><a onclick="return confirm(\'是否删除？\')" href="shopServlet?op=del&proId='+element.proId+'" class="btn button_btn btn-danger" id="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a><a class="btn button_btn bg-deep-blue"><i class="fa fa-trash-o"></i>&nbsp;修改</a></td>';
+              		obj+='</tr>';
+              	$("#tBody").append(obj);
+              });
+             $("#ulpage").empty();
+     //上一页
+		    var objLi = '<li><a id="aprivPage" href="#">&laquo;</a></li>';
+		
+		    for(var i = 1;i<=data.allPage;i++){
+			if(i==data.currentPage){					
+				objLi+='<li class="active"><a id="acurrentPage" href="#">'+i+'</a></li>';
+			}else{
+				objLi+='<li><a href="#" id="acurrentPage">'+i+'</a></li>';
+				
+			}
+		}
+		 //下一页
+		 objLi+='<li><a id="anextPage" href="#">&raquo;</a></li>';
+		 
+		$("#ulpage").append(objLi);
+		
+		
+		$("#ulpage").append("<input type='hidden' id='allPage' value='"+data.allPage+"'/>");
+        
+        }
+
+
+
+
+
+ 
+			
+				$('table th input:checkbox').on('click' , function(){
+					var that = this;
+					$(this).closest('table').find('tr > td:first-child input:checkbox')
+					.each(function(){
+						this.checked = that.checked;
+						$(this).closest('tr').toggleClass('selected');
+					});
+						
+				});
+			
+	/*产品-删除*/
+function picture_del(obj,id){
+	layer.confirm('确认要删除吗？',{icon:0,},function(index){
+		$(obj).parents("tr").remove();
+		layer.msg('已删除!',{icon:1,time:1000});
+	});
+}
+/*******滚动条*******/
+$("body").niceScroll({  
+	cursorcolor:"#888888",  
+	cursoropacitymax:1,  
+	touchbehavior:false,  
+	cursorwidth:"5px",  
+	cursorborder:"0",  
+	cursorborderradius:"5px"  
+});
+	/*时间*/
+	laydate({
+    elem: '#start',
+    event: 'focus' 
+});
+</script>

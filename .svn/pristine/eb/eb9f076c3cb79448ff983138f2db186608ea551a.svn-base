@@ -1,0 +1,189 @@
+package com.qlgshopping.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.qlgshopping.entity.MapModel;
+import com.qlgshopping.entity.OrderInfo;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.UserInfo;
+import com.qlgshopping.service.OrderInfoService;
+import com.qlgshopping.service.OrderTableService;
+
+public class OrderTableServlet extends HttpServlet {
+	private OrderTableService odSe=new OrderTableService();
+	private OrderInfoService odifSe=new OrderInfoService();
+	/**
+	 * Constructor of the object.
+	 */
+	public OrderTableServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		this.doPost(request, response);
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to post.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String op=request.getParameter("op");
+		if(op.equals("allorder")){
+			loadAllOrder(request, response);
+		}
+		else if(op.equals("unpay")){
+			loadUnPayOrder(request, response);
+		}
+		else if(op.equals("noeva")){
+			loadNoEvaluteOrder(request, response);
+		}
+		else if(op.equals("loadorderbyid")){
+			loadOrderById(request, response);
+		}
+		else if(op.equals("loadordermany")){
+			cartToOrder(request, response);
+		}
+		else if(op.equals("gotoevalute")){
+			gotoEvalute(request, response);
+		}
+	}
+	/**
+	 * 跳转到评价页面
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	public void gotoEvalute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		int odifId =Integer.parseInt(request.getParameter("odifid"));
+		OrderInfo selectByOrderInfoId = odifSe.selectByOrderInfoId(odifId);
+		request.setAttribute("odif", selectByOrderInfoId);
+		request.getRequestDispatcher("evalute.jsp").forward(request, response);
+	}
+	
+	/**
+	 * 由购物车结算跳到订单支付页面
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	public void cartToOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		 ArrayList<Integer> orderIdList=(ArrayList<Integer>)request.getAttribute("oderlist");
+		 ArrayList<OrderTable> odtableList=new ArrayList<>();
+		 for(Integer i:orderIdList){
+			 odtableList.add(odSe.selectByOrderId(i));
+		 }
+		request.setAttribute("odtablelist", odtableList);
+		request.getRequestDispatcher("chooseAddress3.jsp").forward(request, response);
+	}
+	/**
+	 * 根据订单id返回订单
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	public void loadOrderById(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+		int orderid=Integer.parseInt(request.getParameter("orderid"));
+		OrderTable selectByOrderId = odSe.selectByOrderId(orderid);
+		ArrayList<OrderTable> odtableList=new ArrayList<>();
+		odtableList.add(selectByOrderId);
+		request.setAttribute("odtablelist", odtableList);
+		request.getRequestDispatcher("chooseAddress3.jsp").forward(request, response);
+	}
+	
+	/**
+	 * 获取未评价的订单
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	public void loadNoEvaluteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("application/json;charset=utf-8");
+		UserInfo user=(UserInfo)request.getSession().getAttribute("user");
+		ArrayList<OrderTable> selectByUserId = odSe.selectByUserIdAndNoEvalute(user.getUserId());
+		Gson gs=new Gson();
+		String json = gs.toJson(selectByUserId);
+		response.getWriter().print(json);
+	}
+	
+	/**
+	 * 加载某用户的未支付订单
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	public void loadUnPayOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		//为了测试，查询用户id为1的订单，后期直接用seesion.user获取orderid
+		response.setContentType("application/json;charset=utf-8");
+		UserInfo user=(UserInfo)request.getSession().getAttribute("user");
+		ArrayList<OrderTable> selectByUserId = odSe.selectByUserIdAndOrdStatic(user.getUserId(), "未付款");
+		Gson gs=new Gson();
+		String json = gs.toJson(selectByUserId);
+		response.getWriter().print(json);
+	}
+	/**
+	 * 加载用户的所有订单
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public void loadAllOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		//为了测试，查询用户id为1的订单，后期直接用seesion.user获取orderid
+		response.setContentType("application/json;charset=utf-8");
+		UserInfo user=(UserInfo)request.getSession().getAttribute("user");
+		ArrayList<OrderTable> selectByUserId = odSe.selectByUserId(user.getUserId());
+		Gson gs=new Gson();
+		String json = gs.toJson(selectByUserId);
+		response.getWriter().print(json);
+	}
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+
+}

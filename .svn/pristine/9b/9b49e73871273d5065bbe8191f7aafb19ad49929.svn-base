@@ -1,0 +1,83 @@
+package com.qlgshopping.dao;
+
+/*
+ * 商品的增删改查
+ */
+
+import java.util.List;
+
+import com.qlgshopping.entity.Product;
+
+
+public class ProductDao extends BaseDao<Product>{
+	
+	/**
+	 * 增加商品
+	 * @param Product pro
+	 * @return int
+	 */
+	public int insertProduct(Product pro) {
+		String sql = "INSERT INTO `product` VALUES (null,?,?,?,?,?,?,?,?,?,?,?)";
+
+		Object[] date = { pro.getProName(), pro.getProType(),
+				pro.getProPrice(), pro.getProNumber(), pro.getStoId(),
+				pro.getProMessage(), pro.getProStatic(),
+				pro.getProGroundDate(),pro.getProNumber(), pro.getProImg(),pro.getProBrand() };
+		// 返回int值，如果>0,添加成功；=0,添加失败
+		return updateOne(sql, date);
+	}
+	
+	/**
+	 * 根据id删除产品
+	 * @param proId
+	 * @return
+	 */
+	public int deletProduct(int proId){
+		String sql = "delete from product where proId=?";
+		return this.updateOne(sql, proId);
+	}
+	
+
+	/**
+	 * 改变商品信息
+	 * @param pro
+	 * @return
+	 */
+	public int updateProduct(Product pro) {
+		String sql = "UPDATE `product` SET `proName`=?, `proType`=?,`proPrice`=?,`proNumber`=?, `stoId`=?, `proMessage`=?, `proStatic`=?, `proGroundDate`=?,proSalesNumber=?, `proImg`=?, `proBrand`=? WHERE (`proId`=?)";
+		Object[] date = { pro.getProName(), pro.getProType(),
+				pro.getProPrice(), pro.getProNumber(), pro.getStoId(),
+				pro.getProMessage(), pro.getProStatic(),
+				pro.getProGroundDate(),pro.getProSalesNumber(), pro.getProImg(),pro.getProBrand(), pro.getProId() };
+		return updateOne(sql, date);
+	}
+	
+	
+	/**
+	 * 根据商品id查找商品
+	 * @param proId
+	 * @return
+	 */
+	public Product selectProductByProId(int proId){
+		String sql = "select * from product where proId = ?";
+		return this.selectOne(sql,proId);
+	}
+	/**
+	 * 根据商品名模糊查找
+	 * @param proName
+	 * @return
+	 */
+	public List<Product> selectProductByProName(String proName){
+		String name="%"+proName+"%";
+		String sql = "select * from product where proName like ?";
+		return this.selectAll(sql,name);
+	}
+	/**
+	 * 查询所有商品
+	 */
+	public List<Product> selectAllProduct() {
+
+		String sql = "select * from product";
+		return selectAll(sql);
+	}
+}

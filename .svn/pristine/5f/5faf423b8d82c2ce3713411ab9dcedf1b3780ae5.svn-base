@@ -1,0 +1,25 @@
+package com.qlgshopping.service;
+
+import java.util.ArrayList;
+
+import com.qlgshopping.dao.EvaluteDao;
+import com.qlgshopping.dao.OrderTableDao;
+import com.qlgshopping.dao.ReceiveAddressDao;
+import com.qlgshopping.entity.OrderTable;
+import com.qlgshopping.entity.ReceiveAddress;
+import com.qlgshopping.entity.UserInfo;
+
+public class UserInfoService {
+	private EvaluteDao evaDao=new EvaluteDao();
+	private OrderTableDao ordTabDao=new OrderTableDao();
+	private ReceiveAddressDao recDao=new ReceiveAddressDao(); 
+/**
+ * 给user对象的外键添加数据	
+ * @param user
+ */
+private void loadUserForeignData(UserInfo user){
+	//user.setEvaluteList(evaDao.); 设置评价
+	user.setOrderTableList(new ArrayList<OrderTable>(ordTabDao.selectByUserId(user.getUserId())));
+	user.setReceiveAddress(new ArrayList<ReceiveAddress>());
+}
+}

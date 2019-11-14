@@ -1,0 +1,45 @@
+package com.qlgshopping.dao;
+
+import com.qlgshopping.entity.ShoppingCartInfo;
+
+public class ShoppingCartInfoDao extends BaseDao<ShoppingCartInfo> {
+	/**
+	 * 新增
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public int insertShoppingCartInfo(ShoppingCartInfo sc2) {
+		Object[] para2 = { sc2.getShpifId(), sc2.getShpId(), sc2.getProId()
+				 };
+		String sql = "INSERT INTO `ShoppingCartInfo` (`shpifId`, `shpId`, `proId`) VALUES (?,?,?)";
+		return this.updateOne(sql, para2);
+	}
+	/**
+	 * 删除详情
+	 * @param shpifId
+	 * @return
+	 */
+	public int deleteByshpifId(int shpifId) {
+
+		String sql = "delete from ShoppingCartInfo where shpifId=?";
+		
+		Object[] date={shpifId};
+		return this.updateOne(sql, date);
+	}
+	/**
+	 * 
+	 * @param p
+	 * @param status
+	 *     
+	 * @return
+	 */
+	public int updateByshpifId(ShoppingCartInfo pu) {
+
+		String sql = "update ShoppingCartInfo set shpId=?,proId=? where shpifId=?";
+		
+
+		Object[] date = {pu.getShpifId(),pu.getShpId(),pu.getProId()};
+		return this.updateOne(sql, date);
+	}
+}

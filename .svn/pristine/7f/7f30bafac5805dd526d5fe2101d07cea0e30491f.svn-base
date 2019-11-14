@@ -1,0 +1,255 @@
+package com.qlgshopping.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.qlgshopping.entity.Page;
+import com.qlgshopping.entity.Product;
+import com.qlgshopping.entity.Store;
+import com.qlgshopping.entity.UserInfo;
+import com.qlgshopping.service.ProductService;
+import com.qlgshopping.service.StoreService;
+import com.qlgshopping.service.UserInfoService;
+
+public class AdminServlet extends HttpServlet {
+  ProductService pSer=new ProductService();
+  StoreService sSer=new StoreService();
+  
+  UserInfoService uSer=new UserInfoService();
+	/**
+	 * Constructor of the object.
+	 */
+	public AdminServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	
+	
+	
+	
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String op=request.getParameter("op");
+		if(op.equals("del")){
+			this.del(request, response);
+		}else if(op.equals("mod")){
+			this.mod(request, response);
+		}else if(op.equals("queryOne")){
+			this.queryOne(request, response);
+		}else if(op.equals("querySto")){
+			this.querySto(request, response);
+		}else if(op.equals("modSpeakAble")){
+			this.modSpeakAble(request, response);
+		}else if(op.equals("modUnSpeakAble")){
+			this.modUnSpeakAble(request, response);
+		}
+		
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to post.
+	 * 
+	 * @param request the request send by the client to the server
+	 * @param response the response send by the server to the client
+	 * @throws ServletException if an error occurred
+	 * @throws IOException if an error occurred
+	 */
+	
+	public void modSpeakAble(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String struserId=request.getParameter("userId");
+		int userId=Integer.parseInt(struserId);
+		UserInfo user=uSer.selectUserById(userId);
+		user.setSpeakAble(0);
+		if(uSer.updateUser(user)){
+			System.out.println("下架成功");
+		}else{
+			System.out.println("下架失败");
+		}
+		response.sendRedirect("administrator_list.jsp");
+		
+	}
+	
+	public void modUnSpeakAble(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String struserId=request.getParameter("userId");
+		int userId=Integer.parseInt(struserId);
+		UserInfo user=uSer.selectUserById(userId);
+		user.setSpeakAble(1);
+		if(uSer.updateUser(user)){
+			System.out.println("禁言成功");
+		}else{
+			System.out.println("禁言失败");
+		}
+		response.sendRedirect("adminunspeakAble.jsp");
+		
+	}
+	
+	
+	
+	public void querySto(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		int currentPage=1;
+	
+		int pageSize=5;
+		String strCurrentPage=request.getParameter("currentPage");
+		if(strCurrentPage!=null&&!"".equals(strCurrentPage)){
+			currentPage=Integer.parseInt(strCurrentPage);	
+		}
+		String strPageSize=request.getParameter("pageSize");
+		if(strPageSize!=null&&!"".equals(strPageSize)){
+			pageSize=Integer.parseInt(strPageSize);
+		}
+		Page<Store> page=sSer.getPageA(currentPage, pageSize);
+		
+		Gson gson=new Gson();
+		String gs=gson.toJson(page);
+		response.getWriter().println(gs);
+		
+		
+		
+	}
+	
+	public void queryOne(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String strproId=request.getParameter("proId");
+		int proId=Integer.parseInt(strproId);
+		Product product=pSer.selectProductByProId(proId);
+		request.setAttribute("product", product);
+		request.getRequestDispatcher("getadminproduct.jsp").forward(request, response);
+		
+	}
+	
+	
+	
+	public void mod(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Product product=new Product();
+		String proName=request.getParameter("proName");
+		if(proName==null&&"".equals(proName)){
+			return;
+		}
+		
+		
+		//String strproType=request.getParameter("proType");
+		
+		//Type type=tSer.selectBytypeName(strproType);
+		//int typeId=type.getTypeId();
+		
+		String strproPrice=request.getParameter("proPrice");
+		
+		double proPrice=0;
+		
+		if(strproPrice==null&&"".equals(strproPrice)){
+			proPrice=0;
+		}else{
+			proPrice=Double.parseDouble(strproPrice);
+		}
+		
+		String strproNumber=request.getParameter("proNumber");
+		int proNumber=0;
+		if(strproNumber!=null&&!"".equals(strproNumber)){
+			proNumber=Integer.parseInt(strproNumber);
+		}
+		String proMessage=request.getParameter("proMessage");
+		String proStatic=request.getParameter("proStatic");
+		String proGroundDate=request.getParameter("proGroundDate");
+		int proSalesNumber=0;
+		String proImg=request.getParameter("proImg");
+		String proBrand=request.getParameter("proBrand");
+		String strproId=request.getParameter("proId");
+		
+		int proId=Integer.parseInt(strproId);
+		int stoId=(pSer.selectProductByProId(proId)).getStoId();
+		product.setProId(proId);
+	
+		product.setProName(proName);
+		product.setProType(15);
+		product.setProPrice(proPrice);
+		product.setProNumber(proNumber);
+		product.setProMessage(proMessage);
+		product.setProStatic(proStatic);
+		product.setProGroundDate(proGroundDate);
+		product.setProSalesNumber(proSalesNumber);
+		product.setProImg(proImg);
+		product.setProBrand(proBrand);
+	
+		product.setStoId(stoId);
+		
+		if(pSer.updateProduct(product)){
+			System.out.println("成功");
+		}else{
+			System.out.println("失败");
+		}
+		
+		response.sendRedirect("adminproduct.jsp");
+		
+		
+		
+	}
+	
+	
+	
+	public void del(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String strproId=request.getParameter("proId");
+		int proId=Integer.parseInt(strproId);
+		if(pSer.deletProduct(proId)){
+			System.out.println("删除成功");
+		}else{
+			System.out.println("删除失败");
+		}
+		response.sendRedirect("adminproduct.jsp");
+	}
+	
+	
+	
+	
+	
+	
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+	this.doGet(request, response);
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+
+}
